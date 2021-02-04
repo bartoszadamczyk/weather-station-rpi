@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - '**/*.py'
+    branches:
+      - '*'
+      - '!master'
 
 jobs:
   lint:
