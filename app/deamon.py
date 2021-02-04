@@ -25,8 +25,6 @@ class Reading:
         return "Sensor {} ID {} temperature {:.2f}C".format(
             self.sensor.model, self.sensor.id, self.temperature
         )
-
-
 class Sensor:
     def __init__(self, pointer, model, pin=None):
         self.pointer = pointer
