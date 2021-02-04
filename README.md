@@ -38,7 +38,6 @@ source /usr/local/bin/virtualenvwrapper.sh
 Source your .zshrc or refresh terminal. Now you can `mkvirtualenv weather`, `lsvirtualenv`, `workon weather`,
 `deactivate` and `rmvirtualenv weather`!
 
-
 ### Install dependencies:
 
 ```shell
