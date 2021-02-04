@@ -33,5 +33,5 @@ jobs:
         if: success()
         with:
           balena_api_token: ${{secrets.BALENA_API_TOKEN}}
-          input_application_path: "app/"
+          application_path: "app/"
           balena_command: "deploy ${{secrets.BALENA_APPLICATION_NAME}} --logs"
