@@ -20,7 +20,6 @@ jobs:
         run: pip install flake8
       - name: Run flake8
         run: flake8
-
   deploy:
     runs-on: ubuntu-latest
     needs: lint
@@ -32,7 +31,7 @@ jobs:
     - name: Copy Dockerfile
       run: cp docker/rpi2/Dockerfile app/Dockerfile
     - name: Deploy to balena
-      uses: theaccordance/balena-push@v1.0.0
+      uses: bartoszadamczyk/balena-push@v1.0.0
       with:
         api-token: ${{secrets.BALENA_API_TOKEN}}
         application-name: ${{secrets.BALENA_APPLICATION_NAME}}
