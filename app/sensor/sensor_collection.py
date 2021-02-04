@@ -7,10 +7,11 @@ from .sensor import Sensor, MODEL
 
 
 class SensorCollection:
-    def __init__(self, pins):
+    def __init__(self, pins=None):
         self.sensors = []
         self._discover_ds18b20_sensors()
-        self._generate_dht22_sensors(pins)
+        if pins:
+            self._generate_dht22_sensors(pins)
 
     def _discover_ds18b20_sensors(self):
         for pointer in W1ThermSensor.get_available_sensors():

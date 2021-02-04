@@ -4,7 +4,7 @@ from sensor import SensorCollection
 
 pins = [board.D17, board.D27]
 
-sensors = SensorCollection()
+sensors = SensorCollection(pins)
 
 while True:
     print("Start")
