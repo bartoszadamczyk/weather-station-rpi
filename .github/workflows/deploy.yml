@@ -34,4 +34,4 @@ jobs:
         with:
           balena_api_token: ${{secrets.BALENA_API_TOKEN}}
           application_path: "app/"
-          balena_command: "deploy ${{secrets.BALENA_APPLICATION_NAME}} --logs"
+          balena_command: "push ${{secrets.BALENA_APPLICATION_NAME}} --logs"
