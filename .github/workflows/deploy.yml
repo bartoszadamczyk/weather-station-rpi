@@ -26,8 +26,6 @@ jobs:
     steps:
     - name: Checkout Repo
       uses: actions/checkout@v1
-    - name: Setup node
-      uses: actions/setup-node@v1.1.0
     - name: Copy Dockerfile
       run: cp docker/rpi2/Dockerfile app/Dockerfile
     - name: Deploy to balena
