@@ -21,10 +21,14 @@ class Reading:
 
     def __str__(self):
         if self.humidity:
-            return "Sensor {} ID {} temperature {:.2f}C humidity {:.2f}%".format( self.sensor.model, self.sensor.id, self.temperature, self.humidity)
+            return "Sensor {} ID {} temperature {:.2f}C humidity {:.2f}%".format(
+                self.sensor.model, self.sensor.id, self.temperature, self.humidity
+            )
         return "Sensor {} ID {} temperature {:.2f}C".format(
             self.sensor.model, self.sensor.id, self.temperature
         )
+
+
 class Sensor:
     def __init__(self, pointer, model, pin=None):
         self.pointer = pointer
