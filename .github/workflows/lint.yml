@@ -6,7 +6,7 @@ on:
       - '**/*.py'
     branches:
       - '*'
-      - '!master'
+      - '!main'
 
 jobs:
   lint:
