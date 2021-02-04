@@ -1,4 +1,4 @@
-# weather-station-rpi
+# Weather station: RPi
 
 Cloud based Raspberry Pi weather station
 
