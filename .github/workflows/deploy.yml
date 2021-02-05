@@ -20,7 +20,7 @@ jobs:
         run: pip install flake8
       - name: Run flake8
         run: flake8
-  deploy:
+  deploy_rpi_2:
     runs-on: ubuntu-latest
     needs: lint
     steps:
@@ -34,4 +34,19 @@ jobs:
         with:
           balena_api_token: ${{secrets.BALENA_API_TOKEN}}
           application_path: "app/"
-          balena_command: "push ${{secrets.BALENA_APPLICATION_NAME}} --logs"
+          balena_command: "push ${{secrets.BALENA_APPLICATION_NAME_RPI_2}} --logs"
+  deploy_rpi_4:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Copy Dockerfile
+        run: cp docker/rpi4/Dockerfile app/Dockerfile
+      - name: Balena Deploy
+        uses: bartoszadamczyk/balena-cli-action@v1
+        if: success()
+        with:
+          balena_api_token: ${{secrets.BALENA_API_TOKEN}}
+          application_path: "app/"
+          balena_command: "push ${{secrets.BALENA_APPLICATION_NAME_RPI_4}} --logs"
