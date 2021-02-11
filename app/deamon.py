@@ -17,7 +17,6 @@ while not killer.kill_now:
     for reading in sensors.get_all_readings():
         if not killer.kill_now:
             print(reading)
-    relay.down()
     time.sleep(3)
 
 cleanup_gpio()
