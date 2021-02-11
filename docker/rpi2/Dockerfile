@@ -6,7 +6,7 @@ RUN apt-get update && apt-get upgrade \
         libgpiod2 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install w1thermsensor RPi.GPIO adafruit-circuitpython-dht
+RUN pip install w1thermsensor RPi.GPIO adafruit-circuitpython-dht boto3
 
 RUN mkdir -p /usr/src/app
 COPY . /usr/src/app
