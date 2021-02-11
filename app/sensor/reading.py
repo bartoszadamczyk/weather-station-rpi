@@ -1,18 +1,15 @@
 from datetime import datetime, timezone
+from typing import Optional
 
 
 class Reading:
-    def __init__(self, sensor, temperature, humidity=None):
-        self.sensor = sensor
+    def __init__(self, temperature: float, humidity: Optional[float] = None) -> None:
         self.temperature = temperature
         self.humidity = humidity
         self.datetime = datetime.now(tz=timezone.utc)
 
     def __str__(self):
+        temperature = f"temperature {self.temperature:.2f}C"
         if self.humidity:
-            return "sensor {} ID {} temperature {:.2f}C humidity {:.2f}%".format(
-                self.sensor.model, self.sensor.id, self.temperature, self.humidity
-            )
-        return "sensor {} ID {} temperature {:.2f}C".format(
-            self.sensor.model, self.sensor.id, self.temperature
-        )
+            return f"{temperature} humidity {self.humidity:.2f}"
+        return temperature
