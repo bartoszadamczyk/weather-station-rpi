@@ -1,0 +1,43 @@
+name: Deploy Prod
+
+on:
+  push:
+    branches:
+      - 'develop'
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9.1
+          architecture: x64
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Install flake8
+        run: pip install flake8
+      - name: Run flake8
+        run: flake8
+      - name: Install mypy
+        run: pip install mypy
+      - name: Run mypy
+        run: mypy .
+  deploy_develop:
+    name: Deploy Develop
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Copy Dockerfile
+        run: cp docker/rpi2/Dockerfile app/Dockerfile
+      - name: Balena Deploy
+        uses: bartoszadamczyk/balena-cli-action@v1
+        if: success()
+        with:
+          balena_api_token: ${{secrets.BALENA_API_TOKEN}}
+          application_path: "app/"
+          balena_command: "push ${{secrets.BALENA_APPLICATION_NAME_RPI_2}} --logs"
