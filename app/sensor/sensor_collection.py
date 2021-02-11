@@ -1,8 +1,6 @@
 import time
 from typing import List, Optional
 
-from microcontroller import Pin  # type: ignore
-
 from .sensor import (
     discover_ds18b20_sensors,
     create_dht22_sensor,
@@ -10,7 +8,7 @@ from .sensor import (
 
 
 class SensorCollection:
-    def __init__(self, pins: Optional[List[Pin]] = None):
+    def __init__(self, pins: Optional[List[int]] = None):
         self.ds18b20_sensors = discover_ds18b20_sensors()
         self.dht22_sensors = [create_dht22_sensor(pin) for pin in pins] if pins else []
 

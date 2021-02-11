@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Union, Optional, List
 
 from adafruit_dht import DHT22  # type: ignore
-from microcontroller import Pin  # type: ignore
+from adafruit_blinka.microcontroller.bcm283x.pin import Pin  # type: ignore
 from w1thermsensor import W1ThermSensor  # type: ignore
 
 from .reading import Reading
@@ -44,7 +44,8 @@ class DHT22Sensor(Sensor):
         return reading
 
 
-def create_dht22_sensor(pin: Pin) -> DHT22Sensor:
+def create_dht22_sensor(pin: int) -> DHT22Sensor:
+    pin = Pin(pin)
     return DHT22Sensor(DHT22(pin), pin)
 
 
