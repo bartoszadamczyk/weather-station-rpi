@@ -9,8 +9,16 @@ sensors = SensorCollection(pins)
 
 pins = [26, 20, 21]
 relay = Relay(26)
+relay.up()
+time.sleep(5)
+relay.down()
+time.sleep(5)
+relay.up()
+time.sleep(5)
+relay.down()
 
 killer = GracefulKiller()
+
 while not killer.kill_now:
     print("Start")
     relay.up()
