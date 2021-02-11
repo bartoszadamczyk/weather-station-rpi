@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO  # type: ignore
 
-# GPIO.setwarnings(False)
+GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 
@@ -20,5 +20,5 @@ class Relay:
 
 
 def cleanup_gpio() -> None:
-    print("Cleaning up pins up")
+    print("Cleaning up gpio")
     GPIO.cleanup()
