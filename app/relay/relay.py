@@ -20,5 +20,5 @@ class Relay:
 
 
 def cleanup_gpio() -> None:
-    print(f"Cleaning up pins up")
+    print("Cleaning up pins up")
     GPIO.cleanup()
