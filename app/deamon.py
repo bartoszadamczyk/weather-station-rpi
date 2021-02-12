@@ -1,21 +1,28 @@
 import time
 
 from graceful_killer import GracefulKiller
-from relay import Relay, cleanup_gpio
+from relay import RelayCollection, cleanup_gpio
 from sensor import SensorCollection
 
-pins = [17, 27]
-sensors = SensorCollection(pins)
+sensor_pins = [17, 27]
+sensor_collection = SensorCollection(sensor_pins)
 
-pins = [26, 20, 21]
-relay = Relay(26)
-relay.up()
+print("Test Sensors")
+for sensor in sensor_collection:
+    sensor = sensor_collection[sensor.name]
+    print(sensor.get_reading())
+
+print("Test Relays")
+relay_pins = [26, 20, 21]
+relay_collection = RelayCollection(relay_pins)
+for relay in relay_collection:
+    relay = relay[relay.pin]
+    relay.up()
 
 killer = GracefulKiller()
-
 while not killer.kill_now:
     print("Start")
-    for reading in sensors.get_all_readings():
+    for reading in sensor_collection.get_all_readings():
         print(reading)
     if not killer.kill_now:
         print("Sleep")

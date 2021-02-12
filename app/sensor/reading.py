@@ -3,7 +3,7 @@ from typing import Optional
 
 
 class Reading:
-    def __init__(self, temperature: float, humidity: Optional[float] = None) -> None:
+    def __init__(self, temperature: float, humidity: Optional[float] = None):
         self.temperature = temperature
         self.humidity = humidity
         self.datetime = datetime.now(tz=timezone.utc)

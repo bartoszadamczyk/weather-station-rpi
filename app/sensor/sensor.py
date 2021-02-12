@@ -10,7 +10,7 @@ from .reading_collection import ReadingCollection
 
 
 class Sensor(ABC):
-    def __init__(self, pointer: Union[DHT22, W1ThermSensor]) -> None:
+    def __init__(self, pointer: Union[DHT22, W1ThermSensor]):
         super().__init__()
         self.pointer = pointer
         self.reading_collection = ReadingCollection()
@@ -26,7 +26,7 @@ class Sensor(ABC):
 
 
 class DHT22Sensor(Sensor):
-    def __init__(self, pointer: Union[DHT22, W1ThermSensor], pin: Pin) -> None:
+    def __init__(self, pointer: Union[DHT22, W1ThermSensor], pin: Pin):
         super().__init__(pointer)
         self.pin = pin
 
