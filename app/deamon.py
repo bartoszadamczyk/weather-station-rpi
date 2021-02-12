@@ -16,7 +16,7 @@ print("Test Relays")
 relay_pins = [26, 20, 21]
 relay_collection = RelayCollection(relay_pins)
 for relay in relay_collection:
-    relay = relay[relay.pin]
+    relay = relay_collection[relay.pin]
     relay.up()
 
 killer = GracefulKiller()
