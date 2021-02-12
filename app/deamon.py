@@ -5,7 +5,7 @@ from relay import RelayCollection, cleanup_gpio
 from sensor import SensorCollection
 
 try:
-    sensor_pins = [17, 27]
+    sensor_pins = [17, 27, 22]
     sensor_collection = SensorCollection(sensor_pins)
 
     relay_pins = [26, 20, 21]
