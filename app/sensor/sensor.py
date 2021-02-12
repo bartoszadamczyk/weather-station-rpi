@@ -32,7 +32,7 @@ class DHT22Sensor(Sensor):
 
     @property
     def name(self) -> str:
-        return "dht22_{}" % self.pin
+        return f"dht22_{self.pin}"
 
     def get_reading(self) -> Optional[Reading]:
         try:
@@ -52,7 +52,7 @@ def create_dht22_sensor(pin: int) -> DHT22Sensor:
 class DS18B20Sensor(Sensor):
     @property
     def name(self):
-        return "ds18b20_{}" % self.pointer.id
+        return f"ds18b20_{self.pointer.id}"
 
     def get_reading(self) -> Reading:
         reading = Reading(self.pointer.get_temperature())
