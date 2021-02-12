@@ -1,3 +1,4 @@
+import time
 from abc import ABC, abstractmethod
 from typing import Union, Optional, List
 
@@ -7,6 +8,11 @@ from w1thermsensor import W1ThermSensor  # type: ignore
 
 from .reading import Reading
 from .reading_collection import ReadingCollection
+
+
+class MODEL:
+    DHT22 = "DHT22"
+    DS18B20 = "DS18B20"
 
 
 class Sensor(ABC):
@@ -21,7 +27,7 @@ class Sensor(ABC):
         pass
 
     @abstractmethod
-    def get_reading(self) -> Optional[Reading]:
+    def get_reading(self, delay: int = 0) -> Optional[Reading]:
         pass
 
 
@@ -34,7 +40,9 @@ class DHT22Sensor(Sensor):
     def name(self) -> str:
         return f"dht22_{self.pin}"
 
-    def get_reading(self) -> Optional[Reading]:
+    def get_reading(self, delay: int = 3) -> Optional[Reading]:
+        time.sleep(delay)
+
         try:
             reading = Reading(self.pointer.temperature, self.pointer.humidity)
         except RuntimeError:
@@ -54,7 +62,9 @@ class DS18B20Sensor(Sensor):
     def name(self):
         return f"ds18b20_{self.pointer.id}"
 
-    def get_reading(self) -> Reading:
+    def get_reading(self, delay: int = 0) -> Reading:
+        time.sleep(delay)
+
         reading = Reading(self.pointer.get_temperature())
         self.reading_collection.add_reading(reading)
         return reading
