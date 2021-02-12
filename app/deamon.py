@@ -18,7 +18,9 @@ try:
     while not killer.kill_now:
         print("Start")
         for sensor in sensor_collection:
-            print(f"{sensor.name} {sensor.get_reading()}")
+            reading = sensor.get_reading()
+            if reading:
+                print(f"{sensor.name} {reading}")
         if not killer.kill_now:
             print("Sleep")
             time.sleep(3)
