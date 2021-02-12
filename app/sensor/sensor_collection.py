@@ -26,6 +26,3 @@ class SensorCollection:
     def __iter__(self):
         yield from self.ds18b20_collection
         yield from self.dht22_collection
-
-    def get_all_readings(self):
-        return [sensor.get_reading() for sensor in self]
