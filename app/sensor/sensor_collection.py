@@ -12,16 +12,16 @@ class SensorCollection:
         self.dht22_collection = (
             [create_dht22_sensor(pin) for pin in pins] if pins else []
         )
-        self.lookup = {
+        self._lookup = {
             **{sensor.name: sensor for sensor in self.ds18b20_collection},
             **{sensor.name: sensor for sensor in self.dht22_collection},  # type: ignore
         }
 
     def keys(self):
-        return list(self.lookup.keys())
+        return list(self._lookup.keys())
 
     def __getitem__(self, name: str):
-        return self.lookup[name]
+        return self._lookup[name]
 
     def __iter__(self):
         yield from self.ds18b20_collection

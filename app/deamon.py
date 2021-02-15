@@ -1,18 +1,29 @@
 import time
 
-from graceful_killer import GracefulKiller
-from relay import RelayCollection, cleanup_gpio
-from sensor import SensorCollection
+from app.alarm import AlarmCollection, Alarm, ALARM_TYPE
+from app.graceful_killer import GracefulKiller
+from app.relay import RelayCollection, cleanup_gpio
+from app.sensor import SensorCollection, METRIC
 
 try:
-    sensor_pins = [17, 27, 22]
+    sensor_pins = [17, 27]
     sensor_collection = SensorCollection(sensor_pins)
 
     relay_pins = [26, 20, 21]
     relay_collection = RelayCollection(relay_pins)
 
-    # for relay in relay_collection:
-    #     relay.up()
+    alarm_collection = AlarmCollection()
+    for i, sensor in enumerate(sensor_collection):
+        alarm_collection.add_alarm(
+            Alarm(
+                ALARM_TYPE.WARM_UP,
+                sensor,
+                METRIC.TEMPERATURE,
+                relay_collection[relay_pins[i]],
+                23,
+                26,
+            )
+        )
 
     killer = GracefulKiller()
     while not killer.kill_now:
@@ -20,7 +31,10 @@ try:
         for sensor in sensor_collection:
             reading = sensor.get_reading()
             if reading:
-                print(f"{sensor.name} {reading}")
+                print(reading)
+        if not killer.kill_now:
+            for alarm in alarm_collection:
+                alarm.check()
         if not killer.kill_now:
             print("Sleep")
             time.sleep(3)

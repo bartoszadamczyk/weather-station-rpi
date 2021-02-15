@@ -26,6 +26,11 @@ class Sensor(ABC):
     def name(self) -> str:
         pass
 
+    @property
+    @abstractmethod
+    def model(self) -> str:
+        pass
+
     @abstractmethod
     def get_reading(self, delay: int = 0) -> Optional[Reading]:
         pass
@@ -40,11 +45,17 @@ class DHT22Sensor(Sensor):
     def name(self) -> str:
         return f"dht22_{self.pin}"
 
+    @property
+    def model(self) -> str:
+        return MODEL.DHT22
+
     def get_reading(self, delay: int = 3) -> Optional[Reading]:
         time.sleep(delay)
 
         try:
-            reading = Reading(self.pointer.temperature, self.pointer.humidity)
+            reading = Reading(
+                self.name, self.model, self.pointer.temperature, self.pointer.humidity
+            )
         except RuntimeError:
             # Reading DHT22 fails a lot...
             return None
@@ -59,13 +70,16 @@ def create_dht22_sensor(pin: int) -> DHT22Sensor:
 
 class DS18B20Sensor(Sensor):
     @property
-    def name(self):
+    def name(self) -> str:
         return f"ds18b20_{self.pointer.id}"
+
+    @property
+    def model(self) -> str:
+        return MODEL.DS18B20
 
     def get_reading(self, delay: int = 0) -> Reading:
         time.sleep(delay)
-
-        reading = Reading(self.pointer.get_temperature())
+        reading = Reading(self.name, self.model, self.pointer.get_temperature())
         self.reading_collection.add_reading(reading)
         return reading
 
