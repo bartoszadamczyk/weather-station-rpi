@@ -37,19 +37,13 @@ class Alarm:
         )
         if not metric_value:
             return self.status
-        if self.status == ALARM_STATUS.UP:
-            if self.stop > metric_value:
-                self.relay.up()
-            else:
-                self.status = ALARM_STATUS.DOWN
-                self.relay.down()
-                print("Alarm has changed to DOWN")
-        else:
-            if self.start > metric_value:
-                self.status = ALARM_STATUS.UP
-                self.relay.up()
-                print("Alarm has changed to UP")
-            else:
-                self.relay.down()
+        if self.status == ALARM_STATUS.UP and metric_value > self.stop:
+            self.status = ALARM_STATUS.DOWN
+            self.relay.down()
+            print(f"Alarm for {self.sensor.name} has changed to DOWN: {metric_value} > {self.stop}")
+        if self.status == ALARM_STATUS.DOWN and metric_value < self.start:
+            self.status = ALARM_STATUS.UP
+            self.relay.up()
+            print(f"Alarm for {self.sensor.name} has changed to UP: {metric_value} < {self.start}")
 
         return self.status

@@ -14,6 +14,9 @@ try:
 
     alarm_collection = AlarmCollection()
     for i, sensor in enumerate(sensor_collection):
+        pin = relay_pins[i]
+        if not pin:
+            break
         alarm_collection.add_alarm(
             Alarm(
                 ALARM_TYPE.WARM_UP,
