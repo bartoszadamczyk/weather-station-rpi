@@ -1,6 +1,6 @@
 from typing import List
 
-from .alarm import Alarm
+from alarm import Alarm
 
 
 class AlarmCollection:

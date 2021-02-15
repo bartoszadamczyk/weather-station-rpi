@@ -1,9 +1,9 @@
 import time
 
-from app.alarm import AlarmCollection, Alarm, ALARM_TYPE
-from app.graceful_killer import GracefulKiller
-from app.relay import RelayCollection, cleanup_gpio
-from app.sensor import SensorCollection, METRIC
+from alarm import Alarm, ALARM_TYPE, AlarmCollection
+from graceful_killer import GracefulKiller
+from relay import RelayCollection, cleanup_gpio
+from sensor import METRIC, SensorCollection
 
 try:
     sensor_pins = [17, 27]

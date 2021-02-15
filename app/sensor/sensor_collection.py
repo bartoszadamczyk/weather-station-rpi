@@ -1,9 +1,6 @@
 from typing import List, Optional
 
-from .sensor import (
-    discover_ds18b20_sensors,
-    create_dht22_sensor,
-)
+from .sensor import discover_ds18b20_sensors, create_dht22_sensor
 
 
 class SensorCollection:

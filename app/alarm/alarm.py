@@ -1,5 +1,5 @@
-from app.relay import Relay
-from app.sensor import Sensor
+from relay import Relay
+from sensor import Sensor
 
 
 class ALARM_TYPE:
