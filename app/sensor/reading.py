@@ -32,7 +32,7 @@ class Reading:
         return None
 
     def __str__(self):
-        temperature = f"name {self.sensor_name} temperature {self.temperature:.2f}C"
+        temperature = f"{self.sensor_name} temperature {self.temperature:.2f}C"
         if self.humidity:
             return f"{temperature} humidity {self.humidity:.2f}"
         return temperature
