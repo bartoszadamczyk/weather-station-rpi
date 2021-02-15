@@ -30,7 +30,6 @@ try:
 
     killer = GracefulKiller()
     while not killer.kill_now:
-        print("Start")
         for sensor in sensor_collection:
             reading = sensor.get_reading()
             if reading:
@@ -39,7 +38,6 @@ try:
             for alarm in alarm_collection:
                 alarm.check()
         if not killer.kill_now:
-            print("Sleep")
             time.sleep(3)
 
 except Exception:
