@@ -1,3 +1,3 @@
-from .relay import Relay, cleanup_gpio
+from .relay import Relay, RelayCollection, cleanup_gpio
 
-__all__ = ["Relay", "cleanup_gpio"]
+__all__ = ["Relay", "RelayCollection", "cleanup_gpio"]

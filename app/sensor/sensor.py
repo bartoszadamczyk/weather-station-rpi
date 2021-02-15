@@ -1,3 +1,4 @@
+import time
 from abc import ABC, abstractmethod
 from typing import Union, Optional, List
 
@@ -9,8 +10,13 @@ from .reading import Reading
 from .reading_collection import ReadingCollection
 
 
+class MODEL:
+    DHT22 = "DHT22"
+    DS18B20 = "DS18B20"
+
+
 class Sensor(ABC):
-    def __init__(self, pointer: Union[DHT22, W1ThermSensor]) -> None:
+    def __init__(self, pointer: Union[DHT22, W1ThermSensor]):
         super().__init__()
         self.pointer = pointer
         self.reading_collection = ReadingCollection()
@@ -20,23 +26,36 @@ class Sensor(ABC):
     def name(self) -> str:
         pass
 
+    @property
     @abstractmethod
-    def get_reading(self) -> Optional[Reading]:
+    def model(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_reading(self, delay: int = 0) -> Optional[Reading]:
         pass
 
 
 class DHT22Sensor(Sensor):
-    def __init__(self, pointer: Union[DHT22, W1ThermSensor], pin: Pin) -> None:
+    def __init__(self, pointer: Union[DHT22, W1ThermSensor], pin: Pin):
         super().__init__(pointer)
         self.pin = pin
 
     @property
     def name(self) -> str:
-        return "dht22_{}" % self.pin
+        return f"dht22_{self.pin}"
 
-    def get_reading(self) -> Optional[Reading]:
+    @property
+    def model(self) -> str:
+        return MODEL.DHT22
+
+    def get_reading(self, delay: int = 3) -> Optional[Reading]:
+        time.sleep(delay)
+
         try:
-            reading = Reading(self.pointer.temperature, self.pointer.humidity)
+            reading = Reading(
+                self.name, self.model, self.pointer.temperature, self.pointer.humidity
+            )
         except RuntimeError:
             # Reading DHT22 fails a lot...
             return None
@@ -51,11 +70,16 @@ def create_dht22_sensor(pin: int) -> DHT22Sensor:
 
 class DS18B20Sensor(Sensor):
     @property
-    def name(self):
-        return "ds18b20_{}" % self.pointer.id
+    def name(self) -> str:
+        return f"ds18b20_{self.pointer.id}"
 
-    def get_reading(self) -> Reading:
-        reading = Reading(self.pointer.get_temperature())
+    @property
+    def model(self) -> str:
+        return MODEL.DS18B20
+
+    def get_reading(self, delay: int = 0) -> Reading:
+        time.sleep(delay)
+        reading = Reading(self.name, self.model, self.pointer.get_temperature())
         self.reading_collection.add_reading(reading)
         return reading
 

@@ -5,32 +5,29 @@ from .reading import Reading
 
 
 class ReadingCollection:
-    def __init__(self, collection_size: int = 5):
-        self.collection_size = collection_size
-        self.collection: List[Reading] = []
+    def __init__(self, collection_size: int = 10):
+        self._collection_size = collection_size
+        self._collection: List[Reading] = []
+
+    def __iter__(self):
+        yield from self._collection
 
     def add_reading(self, reading: Reading):
-        self.collection.append(reading)
-        self._trim_collection()
+        self._collection.append(reading)
+        self._collection = self._collection[-self._collection_size :]
 
-    def _trim_collection(self):
-        self.collection = self.collection[-self.collection_size :]
-
-    def get_average_temperature(self):
-        temperature_readings = [
-            reading.temperature
-            for reading in self.collection
-            if reading.temperature is not None
+    def get_value(
+        self,
+        metric: str,
+        window: int = 5,
+    ):
+        readings = [
+            reading[metric]
+            for reading in self._collection[-window:]
+            if reading[metric] is not None
         ]
-        return mean(temperature_readings) if len(temperature_readings) else None
-
-    def get_average_humidity(self):
-        humidity_readings = [
-            reading.humidity
-            for reading in self.collection
-            if reading.humidity is not None
-        ]
-        return mean(humidity_readings) if len(humidity_readings) else None
-
-    def get_latest_reading(self):
-        return self.collection[-1]
+        if len(readings) > 1:
+            return mean(readings)
+        if len(readings) == 1:
+            return readings[0]
+        return None
