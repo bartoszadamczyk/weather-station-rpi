@@ -38,7 +38,7 @@ class Alarm:
         if not metric_value:
             return self.status
         if self.status == ALARM_STATUS.UP:
-            if self.stop < metric_value:
+            if self.stop > metric_value:
                 self.relay.up()
             else:
                 self.status = ALARM_STATUS.DOWN
@@ -48,6 +48,7 @@ class Alarm:
             if self.start > metric_value:
                 self.status = ALARM_STATUS.UP
                 self.relay.up()
+                print("Alarm has changed to UP")
             else:
                 self.relay.down()
 
