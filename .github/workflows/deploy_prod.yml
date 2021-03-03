@@ -39,5 +39,5 @@ jobs:
         if: success()
         with:
           balena_api_token: ${{secrets.BALENA_API_TOKEN}}
-          application_path: "/"
+          application_path: "."
           balena_command: "push ${{secrets.BALENA_APPLICATION_NAME_RPI_4}} --logs"
