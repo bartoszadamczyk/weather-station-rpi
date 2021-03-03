@@ -9,8 +9,8 @@ RUN apt-get update && apt-get upgrade \
 RUN pip install w1thermsensor RPi.GPIO adafruit-circuitpython-dht boto3
 
 RUN mkdir -p /usr/src
-COPY app /usr/src/
-COPY run.sh /usr/src/
+COPY app /usr/src/app
+COPY run.sh /usr/src/run.sh
 
 WORKDIR /usr/src
 
