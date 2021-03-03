@@ -8,10 +8,11 @@ RUN apt-get update && apt-get upgrade \
 
 RUN pip install w1thermsensor RPi.GPIO adafruit-circuitpython-dht boto3
 
-RUN mkdir -p /usr/src/app
-COPY . /usr/src/app
+RUN mkdir -p /usr/src
+COPY app /usr/src/
+COPY run.sh /usr/src/
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src
 
 RUN chmod +x run.sh
 CMD [ "bash", "run.sh" ]

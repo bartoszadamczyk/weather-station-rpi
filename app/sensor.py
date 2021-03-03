@@ -6,8 +6,7 @@ from adafruit_dht import DHT22  # type: ignore
 from adafruit_blinka.microcontroller.bcm283x.pin import Pin  # type: ignore
 from w1thermsensor import W1ThermSensor  # type: ignore
 
-from .reading import Reading
-from .reading_collection import ReadingCollection
+from .reading import ReadingCollection, Reading
 
 
 class MODEL:
@@ -86,3 +85,25 @@ class DS18B20Sensor(Sensor):
 
 def discover_ds18b20_sensors() -> List[DS18B20Sensor]:
     return [DS18B20Sensor(pointer) for pointer in W1ThermSensor.get_available_sensors()]
+
+
+class SensorCollection:
+    def __init__(self, pins: Optional[List[int]] = None):
+        self.ds18b20_collection = discover_ds18b20_sensors()
+        self.dht22_collection = (
+            [create_dht22_sensor(pin) for pin in pins] if pins else []
+        )
+        self._lookup = {
+            **{sensor.name: sensor for sensor in self.ds18b20_collection},
+            **{sensor.name: sensor for sensor in self.dht22_collection},  # type: ignore
+        }
+
+    def keys(self):
+        return list(self._lookup.keys())
+
+    def __getitem__(self, name: str):
+        return self._lookup[name]
+
+    def __iter__(self):
+        yield from self.ds18b20_collection
+        yield from self.dht22_collection

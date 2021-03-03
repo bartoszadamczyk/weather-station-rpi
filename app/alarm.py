@@ -1,5 +1,7 @@
-from relay import Relay
-from sensor import Sensor
+from typing import List
+
+from .relay import Relay
+from .sensor import Sensor
 
 
 class ALARM_TYPE:
@@ -47,3 +49,14 @@ class Alarm:
             self.relay.up()
 
         return self.status
+
+
+class AlarmCollection:
+    def __init__(self):
+        self._collection: List[Alarm] = []
+
+    def __iter__(self):
+        yield from self._collection
+
+    def add_alarm(self, alarm: Alarm):
+        self._collection.append(alarm)
