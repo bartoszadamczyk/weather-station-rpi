@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
-from typing import Optional
+from statistics import mean
+from typing import Optional, List
 
 
 class METRIC:
@@ -36,3 +37,28 @@ class Reading:
         if self.humidity:
             return f"{temperature} humidity {self.humidity:.2f}"
         return temperature
+
+
+class ReadingCollection:
+    def __init__(self, max_size: int = 10):
+        self._max_size = max_size
+        self._collection: List[Reading] = []
+
+    def __iter__(self):
+        yield from self._collection
+
+    def add_reading(self, reading: Reading):
+        self._collection.insert(0, reading)
+        self._collection = self._collection[0 : self._max_size]
+
+    def get_value(self, metric: str = METRIC.TEMPERATURE, window: int = 5):
+        readings = [
+            reading[metric]
+            for reading in self._collection[0:window]
+            if reading[metric] is not None
+        ]
+        if len(readings) > 1:
+            return mean(readings)
+        if len(readings) == 1:
+            return readings[0]
+        return None

@@ -1,4 +1,4 @@
 #!/bin/sh
 
 modprobe w1-gpio && modprobe w1-therm
-exec python deamon.py
+exec python -m app
