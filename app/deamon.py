@@ -39,7 +39,7 @@ def run():
                 if reading:
                     print(reading)
                     # try:
-                    send_message_to_sqs(reading)
+                    send_message_to_sqs(reading.__dict__)
                     # except Exception:
                     #     print("Failed to send reading to sqs")
 
