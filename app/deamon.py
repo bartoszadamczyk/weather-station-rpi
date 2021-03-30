@@ -38,10 +38,10 @@ def run():
                 reading = sensor.get_reading()
                 if reading:
                     print(reading)
-                    try:
-                        send_message_to_sqs(reading)
-                    except Exception:
-                        print("Failed to send reading to sqs")
+                    # try:
+                    send_message_to_sqs(reading)
+                    # except Exception:
+                    #     print("Failed to send reading to sqs")
 
             if not killer.kill_now:
                 for alarm in alarm_collection:
