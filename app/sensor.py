@@ -23,7 +23,7 @@ class Sensor(ABC):
 
     @property
     @abstractmethod
-    def name(self) -> str:
+    def id(self) -> str:
         pass
 
     @property
@@ -44,8 +44,8 @@ class DHT22Sensor(Sensor):
         self.pin = pin
 
     @property
-    def name(self) -> str:
-        return f"dht22_{self.pin}"
+    def id(self) -> str:
+        return f"pin{self.pin}"
 
     @property
     def model(self) -> str:
@@ -57,7 +57,7 @@ class DHT22Sensor(Sensor):
         try:
             reading = Reading(
                 self.device_uuid,
-                self.name,
+                self.id,
                 self.model,
                 self.pointer.temperature,
                 self.pointer.humidity,
@@ -76,8 +76,8 @@ def create_dht22_sensor(device_uuid: str, pin: int) -> DHT22Sensor:
 
 class DS18B20Sensor(Sensor):
     @property
-    def name(self) -> str:
-        return f"ds18b20_{self.pointer.id}"
+    def id(self) -> str:
+        return self.pointer.id
 
     @property
     def model(self) -> str:
@@ -86,7 +86,7 @@ class DS18B20Sensor(Sensor):
     def get_reading(self, delay: int = 0) -> Reading:
         time.sleep(delay)
         reading = Reading(
-            self.device_uuid, self.name, self.model, self.pointer.get_temperature()
+            self.device_uuid, self.id, self.model, self.pointer.get_temperature()
         )
         self.reading_collection.add_reading(reading)
         return reading
@@ -108,15 +108,15 @@ class SensorCollection:
             [create_dht22_sensor(device_uuid, pin) for pin in pins] if pins else []
         )
         self._lookup = {
-            **{sensor.name: sensor for sensor in self.ds18b20_collection},
-            **{sensor.name: sensor for sensor in self.dht22_collection},  # type: ignore
+            **{sensor.id: sensor for sensor in self.ds18b20_collection},
+            **{sensor.id: sensor for sensor in self.dht22_collection},  # type: ignore
         }
 
     def keys(self):
         return list(self._lookup.keys())
 
-    def __getitem__(self, name: str):
-        return self._lookup[name]
+    def __getitem__(self, sensor_id: str):
+        return self._lookup[sensor_id]
 
     def __iter__(self):
         yield from self.ds18b20_collection
