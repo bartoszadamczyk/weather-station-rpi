@@ -1,6 +1,6 @@
 import time
 
-from aws import send_message_to_sqs
+from .aws import send_message_to_sqs
 from .alarm import ALARM_TYPE, Alarm, AlarmCollection
 from .graceful_killer import GracefulKiller
 from .relay import cleanup_gpio, RelayCollection
