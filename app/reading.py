@@ -11,12 +11,14 @@ class METRIC:
 class Reading:
     def __init__(
         self,
+        device_uuid: str,
         sensor_name: str,
         sensor_model: str,
         temperature: float,
         humidity: Optional[float] = None,
     ):
         self.datetime = datetime.now(tz=timezone.utc)
+        self.device_uuid = device_uuid
         self.sensor_name = sensor_name
         self.sensor_model = sensor_model
         self.temperature = temperature
