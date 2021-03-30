@@ -1,5 +1,7 @@
 import time
 
+
+from .aws import send_message_to_sqs
 from .alarm import ALARM_TYPE, Alarm, AlarmCollection
 from .graceful_killer import GracefulKiller
 from .relay import cleanup_gpio, RelayCollection
@@ -37,6 +39,7 @@ def run():
                 reading = sensor.get_reading()
                 if reading:
                     print(reading)
+                    send_message_to_sqs(reading.__dict__)
             if not killer.kill_now:
                 for alarm in alarm_collection:
                     alarm.check()
