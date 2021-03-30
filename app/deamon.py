@@ -1,3 +1,4 @@
+import os
 import time
 
 
@@ -9,10 +10,13 @@ from .reading import METRIC
 from .sensor import SensorCollection
 
 
+BALENA_DEVICE_UUID = os.environ["BALENA_DEVICE_UUID"]
+
+
 def run():
     try:
         sensor_pins = [17, 27]
-        sensor_collection = SensorCollection(sensor_pins)
+        sensor_collection = SensorCollection(BALENA_DEVICE_UUID, sensor_pins)
 
         relay_pins = [26, 20, 21]
         relay_collection = RelayCollection(relay_pins)
