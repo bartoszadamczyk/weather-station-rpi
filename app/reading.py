@@ -12,14 +12,14 @@ class Reading:
     def __init__(
         self,
         device_uuid: str,
-        sensor_name: str,
+        sensor_id: str,
         sensor_model: str,
         temperature: float,
         humidity: Optional[float] = None,
     ):
         self.datetime = datetime.now(tz=timezone.utc)
         self.device_uuid = device_uuid
-        self.sensor_name = sensor_name
+        self.sensor_id = sensor_id
         self.sensor_model = sensor_model
         self.temperature = temperature
         self.humidity = humidity
@@ -35,10 +35,20 @@ class Reading:
         return None
 
     def __str__(self):
-        temperature = f"{self.sensor_name} temperature {self.temperature:.2f}C"
+        temperature = f"{self.sensor_id} temperature {self.temperature:.2f}C"
         if self.humidity:
             return f"{temperature} humidity {self.humidity:.2f}"
         return temperature
+
+    def as_dict(self):
+        return {
+            "datetime": int(self.datetime.timestamp() * 1000),
+            "device_uuid": self.device_uuid,
+            "sensor_id": self.sensor_id,
+            "sensor_model": self.sensor_model,
+            "temperature": self.temperature,
+            "humidity": self.humidity,
+        }
 
 
 class ReadingCollection:

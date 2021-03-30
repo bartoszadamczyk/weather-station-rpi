@@ -43,7 +43,7 @@ def run():
                 reading = sensor.get_reading()
                 if reading:
                     print(reading)
-                    send_message_to_sqs(reading.__dict__)
+                    send_message_to_sqs(reading.as_dict())
             if not killer.kill_now:
                 for alarm in alarm_collection:
                     alarm.check()
