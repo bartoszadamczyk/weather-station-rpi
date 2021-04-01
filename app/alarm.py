@@ -40,11 +40,11 @@ class Alarm:
         if not metric_value:
             return self.status
         if self.status == ALARM_STATUS.UP and metric_value > self.stop:
-            print(f"Alarm for {self.sensor.name} is DOWN: {metric_value} > {self.stop}")
+            print(f"Alarm for {self.sensor.id} is DOWN: {metric_value} > {self.stop}")
             self.status = ALARM_STATUS.DOWN
             self.relay.down()
         if self.status == ALARM_STATUS.DOWN and metric_value < self.start:
-            print(f"Alarm for {self.sensor.name} is UP: {metric_value} < {self.start}")
+            print(f"Alarm for {self.sensor.id} is UP: {metric_value} < {self.start}")
             self.status = ALARM_STATUS.UP
             self.relay.up()
 
