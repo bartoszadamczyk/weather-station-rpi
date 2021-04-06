@@ -1,6 +1,6 @@
 import time
 from abc import ABC, abstractmethod
-from typing import Union, Optional, List
+from typing import Optional, List
 
 from adafruit_dht import DHT22  # type: ignore
 from adafruit_blinka.microcontroller.bcm283x.pin import Pin  # type: ignore
