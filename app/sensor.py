@@ -6,6 +6,7 @@ from adafruit_dht import DHT22  # type: ignore
 from adafruit_blinka.microcontroller.bcm283x.pin import Pin  # type: ignore
 from w1thermsensor import W1ThermSensor  # type: ignore
 
+from .helper import get_cpu_temperature
 from .reading import ReadingCollection, Reading
 
 
@@ -113,14 +114,10 @@ class CPUSensor(Sensor):
     def model(self) -> str:
         return MODEL.CPU
 
-    def _get_cpu_temperature(self) -> float:
-        with open("/sys/class/thermal/thermal_zone0/temp", "r") as cpu_temperature_file:
-            return int(cpu_temperature_file.read()) / 1000
-
     def get_reading(self, delay: int = 0) -> Reading:
         time.sleep(delay)
         reading = Reading(
-            self.device_uuid, self.id, self.model, self._get_cpu_temperature()
+            self.device_uuid, self.id, self.model, get_cpu_temperature()
         )
         self.reading_collection.add_reading(reading)
         return reading
