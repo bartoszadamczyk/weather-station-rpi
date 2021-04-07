@@ -6,6 +6,7 @@ Cloud based Raspberry Pi weather station
 
 - https://pinout.xyz/
 - https://www.circuito.io/app
+- https://lastminuteengineers.com/electronics/basic-electronics/
 
 ### DS18B20: Temperature Sensor
 
@@ -57,10 +58,11 @@ on [The PiHut](https://thepihut.com/products/adafruit-bme680-temperature-humidit
 You can use GPIOs as an output for your alarms. This can be used to control relays or other devices. **Remember to
 protect your GPIOs! Don't connect relays directly to your Raspberry Pi. This is going to break your device!** You need
 some transistors, diodes and preferably octocouplers to protect your board. If you don't want to build it yourself, buy
-a ready-made relays board. Just remember to pick one compatible with Raspberry Pi 3v3 GPIOs like the one from WaveShare.
+a ready-made relays board. Just remember to pick one compatible with Raspberry Pi 3v3 GPIOs like the one
+from [WaveShare](https://www.waveshare.com/wiki/RPi_Relay_Board).
 
 - WaveShare Relay board is using `GPIO 26`, `GPIO 20`, `GPIO 21`.
-- You can also use `GPIO 19`, `GPIO 16`, `GPIO 13`, `GPIO 6`, `GPIO 12` and `GPIO 5`.  
+- You can also use `GPIO 19`, `GPIO 16`, `GPIO 13`, `GPIO 6`, `GPIO 12` and `GPIO 5`.
 
 You can get it on [The PiHut](https://thepihut.com/products/raspberry-pi-relay-board) or Amazon.
 
