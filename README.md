@@ -56,9 +56,9 @@ on [The PiHut](https://thepihut.com/products/adafruit-bme680-temperature-humidit
 ### Relays
 
 You can use GPIOs as an output for your alarms. This can be used to control relays or other devices. **Remember to
-protect your GPIOs! Don't connect relays directly to your Raspberry Pi. This is going to break your device!** You need
-some transistors, diodes and preferably octocouplers to protect your board. If you don't want to build it yourself, buy
-a ready-made relays board. Just remember to pick one compatible with Raspberry Pi 3v3 GPIOs like the one
+protect your GPIOs! Don't connect relays directly to your Raspberry Pi. This is going to break your board!** You need
+some transistors, diodes, resistors and preferably octocouplers to protect your device. If you don't want to build it
+yourself, buy a ready-made relay board. Just remember to pick one compatible with Raspberry Pi 3v3 GPIOs, like the one
 from [WaveShare](https://www.waveshare.com/wiki/RPi_Relay_Board).
 
 - WaveShare Relay board is using `GPIO 26`, `GPIO 20`, `GPIO 21`.
