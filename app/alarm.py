@@ -34,19 +34,19 @@ class Alarm:
         self.status = ALARM_STATUS.DOWN
 
     def check(self) -> str:
-        metric_value = self.sensor.reading_collection.get_value(
-            self.metric, self.window_size
-        )
-        if not metric_value:
-            return self.status
-        if self.status == ALARM_STATUS.UP and metric_value > self.stop:
-            print(f"Alarm for {self.sensor.id} is DOWN: {metric_value} > {self.stop}")
-            self.status = ALARM_STATUS.DOWN
-            self.relay.down()
-        if self.status == ALARM_STATUS.DOWN and metric_value < self.start:
-            print(f"Alarm for {self.sensor.id} is UP: {metric_value} < {self.start}")
-            self.status = ALARM_STATUS.UP
-            self.relay.up()
+        # metric_value = self.sensor.reading_collection.get_value(
+        #     self.metric, self.window_size
+        # )
+        # if not metric_value:
+        #     return self.status
+        # if self.status == ALARM_STATUS.UP and metric_value > self.stop:
+        #     print(f"Alarm for {self.sensor.id} is DOWN: {metric_value} > {self.stop}")
+        #     self.status = ALARM_STATUS.DOWN
+        #     self.relay.down()
+        # if self.status == ALARM_STATUS.DOWN and metric_value < self.start:
+        #     print(f"Alarm for {self.sensor.id} is UP: {metric_value} < {self.start}")
+        #     self.status = ALARM_STATUS.UP
+        #     self.relay.up()
 
         return self.status
 

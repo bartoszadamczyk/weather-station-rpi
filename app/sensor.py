@@ -1,26 +1,20 @@
-import time
 from abc import ABC, abstractmethod
 from typing import Optional, List
 
+import asyncio
 from adafruit_dht import DHT22  # type: ignore
 from adafruit_blinka.microcontroller.bcm283x.pin import Pin  # type: ignore
 from w1thermsensor import W1ThermSensor  # type: ignore
 
+from .constants import MODEL, METRIC
 from .helper import get_cpu_temperature
-from .reading import ReadingCollection, Reading
-
-
-class MODEL:
-    CPU = "CPU"
-    DHT22 = "DHT22"
-    DS18B20 = "DS18B20"
+from .reading import Reading
 
 
 class Sensor(ABC):
     def __init__(self, device_uuid: str):
         super().__init__()
         self.device_uuid = device_uuid
-        self.reading_collection = ReadingCollection()
 
     @property
     @abstractmethod
@@ -29,11 +23,16 @@ class Sensor(ABC):
 
     @property
     @abstractmethod
-    def model(self) -> str:
+    def model(self) -> MODEL:
+        pass
+
+    @property
+    @abstractmethod
+    def metrics(self) -> List[METRIC]:
         pass
 
     @abstractmethod
-    def get_reading(self, delay: int = 0) -> Optional[Reading]:
+    async def get_readings(self) -> List[Reading]:
         pass
 
 
@@ -48,25 +47,32 @@ class DHT22Sensor(Sensor):
         return f"pin{self.pin}"
 
     @property
-    def model(self) -> str:
+    def model(self) -> MODEL:
         return MODEL.DHT22
 
-    def get_reading(self, delay: int = 3) -> Optional[Reading]:
-        time.sleep(delay)
+    @property
+    def metrics(self) -> List[METRIC]:
+        return [METRIC.TEMPERATURE, METRIC.HUMIDITY]
 
+    def _get_metric_value(self, metric: METRIC) -> Optional[float]:
         try:
-            reading = Reading(
-                self.device_uuid,
-                self.id,
-                self.model,
-                self.pointer.temperature,
-                self.pointer.humidity,
-            )
+            if metric == METRIC.TEMPERATURE:
+                return self.pointer.temperature
+            return self.pointer.humidity
         except RuntimeError:
             # Reading DHT22 fails a lot...
             return None
-        self.reading_collection.add_reading(reading)
-        return reading
+
+    async def get_readings(self) -> List[Reading]:
+        readings = []
+        for metric in self.metrics:
+            value = self._get_metric_value(metric)
+            if value:
+                readings.append(
+                    Reading(self.device_uuid, self.model, self.id, metric, value)
+                )
+            await asyncio.sleep(2)
+        return readings
 
 
 def create_dht22_sensor(device_uuid: str, pin: int) -> DHT22Sensor:
@@ -84,21 +90,26 @@ class DS18B20Sensor(Sensor):
         return self.pointer.id
 
     @property
-    def model(self) -> str:
+    def model(self) -> MODEL:
         return MODEL.DS18B20
 
-    def get_reading(self, delay: int = 0) -> Reading:
-        time.sleep(delay)
-        reading = Reading(
-            self.device_uuid, self.id, self.model, self.pointer.get_temperature()
-        )
-        self.reading_collection.add_reading(reading)
-        return reading
+    @property
+    def metrics(self) -> List[METRIC]:
+        return [METRIC.TEMPERATURE]
+
+    async def get_readings(self) -> List[Reading]:
+        return [
+            Reading(
+                self.device_uuid,
+                self.model,
+                self.id,
+                METRIC.TEMPERATURE,
+                self.pointer.get_temperature(),
+            )
+        ]
 
 
-def discover_ds18b20_sensors(
-    device_uuid: str,
-) -> List[DS18B20Sensor]:
+def discover_ds18b20_sensors(device_uuid: str) -> List[DS18B20Sensor]:
     return [
         DS18B20Sensor(device_uuid, pointer)
         for pointer in W1ThermSensor.get_available_sensors()
@@ -111,21 +122,26 @@ class CPUSensor(Sensor):
         return "cpu"
 
     @property
-    def model(self) -> str:
+    def model(self) -> MODEL:
         return MODEL.CPU
 
-    def get_reading(self, delay: int = 0) -> Reading:
-        time.sleep(delay)
-        reading = Reading(
-            self.device_uuid, self.id, self.model, get_cpu_temperature()
-        )
-        self.reading_collection.add_reading(reading)
-        return reading
+    @property
+    def metrics(self) -> List[METRIC]:
+        return [METRIC.TEMPERATURE]
+
+    async def get_readings(self) -> List[Reading]:
+        return [
+            Reading(
+                self.device_uuid,
+                self.model,
+                self.id,
+                METRIC.TEMPERATURE,
+                get_cpu_temperature(),
+            )
+        ]
 
 
-def create_cpu_sensor(
-    device_uuid: str,
-) -> CPUSensor:
+def create_cpu_sensor(device_uuid: str) -> CPUSensor:
     return CPUSensor(device_uuid)
 
 

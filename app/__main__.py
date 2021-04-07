@@ -1,4 +1,4 @@
-from app import deamon
+from app import init
 
 if __name__ == "__main__":
-    deamon.run()
+    init.run()
