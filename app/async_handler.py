@@ -8,7 +8,6 @@ import asyncio
 
 from .constants import COMPONENT_TYPE, METRIC_TYPE
 from .reading import Reading
-from .relay import cleanup_gpio
 
 
 class Producer(ABC):
@@ -122,7 +121,6 @@ class AsyncHandler:
         finally:
             self._thread_pool_executor.shutdown()
             print("Thread pool killed")
-            cleanup_gpio()
 
 
 T = TypeVar("T")

@@ -2,7 +2,7 @@ import os
 
 from .async_handler import AsyncHandler
 from .consumers import ReadingsLogger, LiveSQSConsumer
-from .relay import RelayHandler
+from .relay import RelayHandler, cleanup_gpio
 from .sensor import (
     create_cpu_sensor,
     discover_ds18b20_sensors,
@@ -48,9 +48,10 @@ def run():
     queue_url = os.getenv("AWS_SQS_DATA")
     if queue_url:
         async_handler.add_consumer(LiveSQSConsumer(DEVICE_UUID, queue_url))
-
-    async_handler.start()
-
+    try:
+        async_handler.start()
+    finally:
+        cleanup_gpio()
 
 # Manual relay trigger
 # Way for alarm to call relay
