@@ -19,12 +19,21 @@ class Reading:
         self.metric = metric
         self.value = value
 
+    @property
+    def timestamp(self):
+        return int(self.datetime.timestamp() * 1000)
+
+    @property
+    def iso_date(self):
+        return self.datetime.isoformat()[:23]
+
     def __str__(self):
-        return f"{self.sensor_id} {self.metric.value} {self.value:.2f}"
+        return f"{self.iso_date} {self.metric.value} " \
+               f"{self.sensor_model.value} {self.sensor_id} {self.value:.2f}"
 
     def as_dict(self):
         return {
-            "datetime": int(self.datetime.timestamp() * 1000),
+            "datetime": self.timestamp,
             "device_uuid": self.device_uuid,
             "sensor_model": self.sensor_model.value,
             "sensor_id": self.sensor_id,
