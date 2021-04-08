@@ -1,3 +1,4 @@
+import functools
 import signal
 from abc import ABC, abstractmethod
 from concurrent.futures import ThreadPoolExecutor
@@ -104,8 +105,12 @@ class AsyncHandler:
 
     def start(self):
         self._loop.create_task(self._consumer_handler())
-        self._loop.add_signal_handler(signal.SIGINT, self.shutdown)
-        self._loop.add_signal_handler(signal.SIGTERM, self.shutdown)
+        self._loop.add_signal_handler(
+            signal.SIGINT, functools.partial(asyncio.ensure_future, self.shutdown())
+        )
+        self._loop.add_signal_handler(
+            signal.SIGTERM, functools.partial(asyncio.ensure_future, self.shutdown())
+        )
         try:
             self._loop.run_forever()
         finally:
