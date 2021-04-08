@@ -51,10 +51,10 @@ class AsyncHandler:
         self._queue = asyncio.Queue()
         self._consumer_tasks = []
         self._cleanup_tasks = []
-        self._shutdown_started = False
+        self._stop_producers = False
 
     async def sleep(self, delay: float, tick: float = 0.1):
-        if self._shutdown_started:
+        if self._stop_producers:
             return
         if delay > tick:
             await asyncio.sleep(tick)
@@ -65,7 +65,7 @@ class AsyncHandler:
     async def _producer_handler(
         self, producer: Producer, interval: float = 5, pause: Optional[float] = None
     ):
-        while not self._shutdown_started:
+        while not self._stop_producers:
             for metric in producer.supported_metrics:
                 reading = await producer.get_reading(metric)
                 if reading:
@@ -87,7 +87,7 @@ class AsyncHandler:
         self._consumer_tasks.append(consumer)
 
     async def _consumer_handler(self):
-        while not self._shutdown_started:
+        while True:
             reading = await self._queue.get()
             for task in self._consumer_tasks:
                 await task.consume_reading(reading)
@@ -96,13 +96,17 @@ class AsyncHandler:
         self._cleanup_tasks.append(task)
 
     async def shutdown(self):
-        self._shutdown_started = True
-        print("Shutdown started")
+        self._stop_producers = True
+        print("Producers stopped")
+        await asyncio.sleep(1)
         for task in self._cleanup_tasks:
             await task()
-        await asyncio.sleep(1)
-        for task in asyncio.Task.all_tasks():
+        print("Cleanup tasks done")
+        for task in asyncio.all_tasks(self._loop):
+            print("Killing one task")
             task.cancel()
+        self._loop.stop()
+        print("Loop stopped")
 
     def start(self):
         self._loop.create_task(self._consumer_handler())
@@ -115,8 +119,8 @@ class AsyncHandler:
         try:
             self._loop.run_forever()
         finally:
-            self._loop.stop()
             self._thread_pool_executor.shutdown()
+            print("Thread pool killed")
 
 
 T = TypeVar("T")
