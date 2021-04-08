@@ -29,7 +29,7 @@ class Relay(Producer):
             functools.partial(
                 GPIO.setup,
                 data={
-                    "channel_or_chan_list": self._pin,
+                    "channel": self._pin,
                     "mode": GPIO.OUT,
                     "initial": GPIO.HIGH,
                 },
