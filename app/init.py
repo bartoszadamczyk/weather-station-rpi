@@ -39,7 +39,7 @@ def run():
     if CONFIG["RELAY"]:
         relay_collection = RelayCollection(CONFIG["RELAY"])
         for relay in relay_collection:
-            async_handler.add_producer(relay)
+            async_handler.add_producer(relay, 60)
 
     # Create consumers
     async_handler.add_consumer(ReadingsLogger())
@@ -54,6 +54,7 @@ def run():
 # Manual relay trigger
 # Way for alarm to call relay
 # TODO: sensor_model, MODULE? sensor_id, device_id RELAY/GPIO?
+# Type? sensors/ relays?
 # TODO: siterm
 
 

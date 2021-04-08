@@ -7,7 +7,7 @@ class ReadingsLogger:
     count = 0
 
     async def consume_reading(self, reading: Reading):
-        if self.count < 500 or self.count % 100 == 0:
+        if self.count < 200 or self.count % 100 < 10:
             print(reading)
         self.count += 1
 
@@ -16,7 +16,7 @@ class LiveSQSConsumer:
     def __init__(self, device_id: str, queue_url: str):
         self.device_id = device_id
         self.queue_url = queue_url
-        self.base = {"type": "LIVE_READING", "device_id": device_id}
+        self.base = {"type": "live_reading", "device_id": device_id}
 
     async def consume_reading(self, reading: Reading):
         body = {**self.base, **reading.as_dict()}

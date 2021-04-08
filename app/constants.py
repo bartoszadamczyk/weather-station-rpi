@@ -2,13 +2,15 @@ from enum import Enum
 
 
 class MODEL(Enum):
-    CPU = "CPU"
-    DHT22 = "DHT22"
-    DS18B20 = "DS18B20"
-    RELAY = "RELAY"
+    CPU = "cpu"
+    DHT22 = "dht22"
+    DS18B20 = "ds18b20"
+    RELAY = "relay"
 
 
 class METRIC(Enum):
-    TEMPERATURE = "TEMPERATURE"
-    HUMIDITY = "HUMIDITY"
-    GPIO = "GPIO"
+    TEMPERATURE = "temperature"
+    HUMIDITY = "humidity"
+    GPIO = "gpio"
+    STATE = "state"
+    CHANGE = "change"
