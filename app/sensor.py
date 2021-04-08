@@ -113,8 +113,6 @@ class BME680Sensor(Producer):
         super().__init__()
         self._i2c = I2C(board.SCL, board.SDA)
         self._pointer = adafruit_bme680.Adafruit_BME680_I2C(self._i2c)
-        # change this to match the location's pressure (hPa) at sea level
-        self._pointer.sea_level_pressure = 1013.25
 
     @property
     def component_id(self) -> str:
@@ -131,21 +129,16 @@ class BME680Sensor(Producer):
             METRIC_TYPE.RELATIVE_HUMIDITY,
             METRIC_TYPE.HUMIDITY,
             METRIC_TYPE.PRESSURE,
-            METRIC_TYPE.ALTITUDE,
             METRIC_TYPE.GAS,
         ]
 
     def _get_metric_value(self, metric: METRIC_TYPE) -> Optional[float]:
         if metric == METRIC_TYPE.TEMPERATURE:
             return self._pointer.temperature
-        if metric == METRIC_TYPE.RELATIVE_HUMIDITY:
-            return self._pointer.relative_humidity
         if metric == METRIC_TYPE.HUMIDITY:
             return self._pointer.humidity
         if metric == METRIC_TYPE.PRESSURE:
             return self._pointer.pressure
-        if metric == METRIC_TYPE.ALTITUDE:
-            return self._pointer.altitude
         if metric == METRIC_TYPE.GAS:
             return self._pointer.gas
         return None

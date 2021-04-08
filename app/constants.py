@@ -13,9 +13,7 @@ class COMPONENT_TYPE(Enum):
 class METRIC_TYPE(Enum):
     TEMPERATURE = "temperature"
     HUMIDITY = "humidity"
-    RELATIVE_HUMIDITY = "relative_humidity"
     PRESSURE = "pressure"
-    ALTITUDE = "altitude"
     GAS = "gas"
 
     INIT = "init"
