@@ -13,10 +13,7 @@ from .sensor import (
 DEVICE_UUID = os.environ["BALENA_DEVICE_UUID"]
 
 DEFAULT_CONFIG = {
-    "CPU": True,
     "DHT22": [17],
-    "DS18B20": True,
-    "BME689": True,
     "RELAY": [26, 20, 21],
 }
 
@@ -27,27 +24,20 @@ def run():
     async_handler = AsyncHandler()
 
     # Create sensors
-    if CONFIG["CPU"]:
-        async_handler.add_producer(create_cpu_sensor())
-    if CONFIG["DHT22"]:
-        for pin in CONFIG["DHT22"]:
-            async_handler.add_producer(create_dht22_sensor(pin), 1, 2)
-    if CONFIG["DS18B20"]:
-        for sensor in discover_ds18b20_sensors():
-            async_handler.add_producer(sensor)
-    if CONFIG["DS18B20"]:
-        for sensor in discover_ds18b20_sensors():
-            async_handler.add_producer(sensor)
-    if CONFIG["DS18B20"]:
+    async_handler.add_producer(create_cpu_sensor())
+    for pin in CONFIG["DHT22"]:
+        async_handler.add_producer(create_dht22_sensor(pin), 1, 2)
+    for sensor in discover_ds18b20_sensors():
+        async_handler.add_producer(sensor)
+    if os.getenv("BME689"):
         async_handler.add_producer(create_bme680_sensor())
 
     # Create relays
-    if CONFIG["RELAY"]:
-        relay_collection = RelayHandler(CONFIG["RELAY"])
-        for relay in relay_collection:
-            async_handler.add_producer(relay, 60, delay=60)
-        async_handler.run_in_loop(relay_collection.init)
-        async_handler.add_cleanup(relay_collection.cleanup)
+    relay_collection = RelayHandler(CONFIG["RELAY"])
+    for relay in relay_collection:
+        async_handler.add_producer(relay, 60, delay=60)
+    async_handler.run_in_loop(relay_collection.init)
+    async_handler.add_cleanup(relay_collection.cleanup)
 
     # Create consumers
     async_handler.add_consumer(ReadingsLogger())
