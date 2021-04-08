@@ -13,9 +13,8 @@ from .reading import Reading
 
 
 class Sensor(ABC):
-    def __init__(self, device_uuid: str):
+    def __init__(self):
         super().__init__()
-        self.device_uuid = device_uuid
 
     @property
     @abstractmethod
@@ -38,8 +37,8 @@ class Sensor(ABC):
 
 
 class DHT22Sensor(Sensor):
-    def __init__(self, device_uuid: str, pointer: DHT22, pin: Pin):
-        super().__init__(device_uuid)
+    def __init__(self, pointer: DHT22, pin: Pin):
+        super().__init__()
         self.pointer = pointer
         self.pin = pin
 
@@ -69,21 +68,19 @@ class DHT22Sensor(Sensor):
         for metric in self.metrics:
             value = await run_in_executor(self._get_metric_value, metric)
             if value:
-                readings.append(
-                    Reading(self.device_uuid, self.model, self.id, metric, value)
-                )
+                readings.append(Reading(self.model, self.id, metric, value))
             await asyncio.sleep(2)
         return readings
 
 
-def create_dht22_sensor(device_uuid: str, pin: int) -> DHT22Sensor:
+def create_dht22_sensor(pin: int) -> DHT22Sensor:
     pin = Pin(pin)
-    return DHT22Sensor(device_uuid, DHT22(pin), pin)
+    return DHT22Sensor(DHT22(pin), pin)
 
 
 class DS18B20Sensor(Sensor):
-    def __init__(self, device_uuid: str, pointer: W1ThermSensor):
-        super().__init__(device_uuid)
+    def __init__(self, pointer: W1ThermSensor):
+        super().__init__()
         self.pointer = pointer
 
     @property
@@ -100,16 +97,11 @@ class DS18B20Sensor(Sensor):
 
     async def get_readings(self) -> List[Reading]:
         value = await run_in_executor(self.pointer.get_temperature)
-        return [
-            Reading(self.device_uuid, self.model, self.id, METRIC.TEMPERATURE, value)
-        ]
+        return [Reading(self.model, self.id, METRIC.TEMPERATURE, value)]
 
 
-def discover_ds18b20_sensors(device_uuid: str) -> List[DS18B20Sensor]:
-    return [
-        DS18B20Sensor(device_uuid, pointer)
-        for pointer in W1ThermSensor.get_available_sensors()
-    ]
+def discover_ds18b20_sensors() -> List[DS18B20Sensor]:
+    return [DS18B20Sensor(pointer) for pointer in W1ThermSensor.get_available_sensors()]
 
 
 class CPUSensor(Sensor):
@@ -127,35 +119,8 @@ class CPUSensor(Sensor):
 
     async def get_readings(self) -> List[Reading]:
         value = await run_in_executor(get_cpu_temperature)
-        return [
-            Reading(self.device_uuid, self.model, self.id, METRIC.TEMPERATURE, value)
-        ]
+        return [Reading(self.model, self.id, METRIC.TEMPERATURE, value)]
 
 
-def create_cpu_sensor(device_uuid: str) -> CPUSensor:
-    return CPUSensor(device_uuid)
-
-
-class SensorCollection:
-    def __init__(self, device_uuid: str, pins: Optional[List[int]] = None):
-        self.cpu_collection = [create_cpu_sensor(device_uuid)]
-        self.ds18b20_collection = discover_ds18b20_sensors(device_uuid)
-        self.dht22_collection = (
-            [create_dht22_sensor(device_uuid, pin) for pin in pins] if pins else []
-        )
-        self._lookup = {
-            **{sensor.id: sensor for sensor in self.cpu_collection},
-            **{sensor.id: sensor for sensor in self.ds18b20_collection},  # type: ignore
-            **{sensor.id: sensor for sensor in self.dht22_collection},  # type: ignore
-        }
-
-    def keys(self):
-        return list(self._lookup.keys())
-
-    def __getitem__(self, sensor_id: str):
-        return self._lookup[sensor_id]
-
-    def __iter__(self):
-        yield from self.cpu_collection
-        yield from self.ds18b20_collection
-        yield from self.dht22_collection
+def create_cpu_sensor() -> CPUSensor:
+    return CPUSensor()

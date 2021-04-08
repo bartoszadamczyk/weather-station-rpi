@@ -1,27 +1,15 @@
 import os
 
-# import time
-# from typing import Protocol, List
-
-# import asyncio
-
-# from .alarm import ALARM_TYPE, Alarm, AlarmCollection
 from .async_handler import AsyncHandler
-
-# from .aws import send_message_to_sqs
-from .consumers import ReadingsLogger
-
-# from .constants import METRIC
-# from .helper import GracefulKiller
-# from .reading import Reading
-from .relay import cleanup_gpio
+from .consumers import ReadingsLogger, LiveSQSConsumer
+from .relay import cleanup_gpio, RelayCollection
 from .sensor import (
     create_cpu_sensor,
     discover_ds18b20_sensors,
     create_dht22_sensor,
 )
 
-BALENA_DEVICE_UUID = os.environ["BALENA_DEVICE_UUID"]
+DEVICE_UUID = os.environ["BALENA_DEVICE_UUID"]
 
 DEFAULT_CONFIG = {
     "CPU": True,
@@ -40,34 +28,37 @@ def run():
 
     # Create sensors
     if CONFIG["CPU"]:
-        async_handler.add_producer(create_cpu_sensor(BALENA_DEVICE_UUID))
+        async_handler.add_producer(create_cpu_sensor())
     if CONFIG["DHT22"]:
         for pin in CONFIG["DHT22"]:
-            async_handler.add_producer(create_dht22_sensor(BALENA_DEVICE_UUID, pin))
+            async_handler.add_producer(create_dht22_sensor(pin))
     if CONFIG["DS18B20"]:
-        for sensor in discover_ds18b20_sensors(BALENA_DEVICE_UUID):
+        for sensor in discover_ds18b20_sensors():
             async_handler.add_producer(sensor)
+    # Create relays
+    if CONFIG["RELAY"]:
+        relay_collection = RelayCollection(CONFIG["RELAY"])
+        for relay in relay_collection:
+            async_handler.add_producer(relay)
 
+    # Create consumers
     async_handler.add_consumer(ReadingsLogger())
+
+    queue_url = os.getenv("AWS_SQS_DATA")
+    if queue_url:
+        async_handler.add_consumer(LiveSQSConsumer(DEVICE_UUID, queue_url))
 
     async_handler.start()
 
 
-# Using the aiofiles:
-#
-# async with aiofiles.open('filename', mode='r') as f:
-#     async for line in f:
-#         print(line)
-
+# Manual relay trigger
+# Way for alarm to call relay
+# TODO: sensor_model, MODULE? sensor_id, device_id RELAY/GPIO?
 # TODO: siterm
-# await q.put(await asyncio.run_in_executor(None, bigcalculation))
 
 
 # def run():
 #     try:
-#         sensor_pins = [17]
-#         sensor_collection = SensorCollection(BALENA_DEVICE_UUID, sensor_pins)
-#
 #         relay_pins = [26, 20, 21]
 #         relay_collection = RelayCollection(relay_pins)
 #

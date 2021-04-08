@@ -6,14 +6,12 @@ from .constants import MODEL, METRIC
 class Reading:
     def __init__(
         self,
-        device_uuid: str,
         sensor_model: MODEL,
         sensor_id: str,
         metric: METRIC,
         value: float,
     ):
         self.datetime = datetime.now(tz=timezone.utc)
-        self.device_uuid = device_uuid
         self.sensor_model = sensor_model
         self.sensor_id = sensor_id
         self.metric = metric
@@ -28,13 +26,14 @@ class Reading:
         return self.datetime.isoformat()[:23]
 
     def __str__(self):
-        return f"{self.iso_date} {self.metric.value} " \
-               f"{self.sensor_model.value} {self.sensor_id} {self.value:.2f}"
+        return (
+            f"{self.iso_date} {self.metric.value} "
+            f"{self.sensor_model.value} {self.sensor_id} {self.value:.2f}"
+        )
 
     def as_dict(self):
         return {
             "datetime": self.timestamp,
-            "device_uuid": self.device_uuid,
             "sensor_model": self.sensor_model.value,
             "sensor_id": self.sensor_id,
             "metric": self.metric.value,

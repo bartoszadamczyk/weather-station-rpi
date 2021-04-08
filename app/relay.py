@@ -2,23 +2,33 @@ from typing import List
 
 import RPi.GPIO as GPIO  # type: ignore
 
+from .constants import MODEL, METRIC
+from .reading import Reading
+
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 
 class Relay:
     def __init__(self, pin: int):
-        print(f"Setup relay on pin {pin}")
         self.pin = pin
+        self.state = 0
         GPIO.setup(pin, GPIO.OUT, initial=GPIO.HIGH)
 
     def up(self):
-        print(f"Set pin {self.pin} up")
+        self.state = 1
         GPIO.output(self.pin, GPIO.LOW)
 
     def down(self):
-        print(f"Set pin {self.pin} down")
+        self.state = 0
         GPIO.output(self.pin, GPIO.HIGH)
+
+    @property
+    def id(self) -> str:
+        return f"pin{self.pin}"
+
+    async def get_readings(self) -> List[Reading]:
+        return [Reading(MODEL.RELAY, self.id, METRIC.GPIO, self.state)]
 
 
 class RelayCollection:
