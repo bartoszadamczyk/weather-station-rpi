@@ -63,8 +63,14 @@ class AsyncHandler:
             await asyncio.sleep(delay)
 
     async def _producer_handler(
-        self, producer: Producer, interval: float = 5, pause: Optional[float] = None
+        self,
+        producer: Producer,
+        interval: float = 5,
+        pause: Optional[float] = None,
+        delay: Optional[float] = None,
     ):
+        if delay:
+            await self.sleep(interval)
         while not self._stop_producers:
             for metric in producer.supported_metrics:
                 reading = await producer.get_reading(metric)
@@ -78,9 +84,13 @@ class AsyncHandler:
         await self._queue.put(reading)
 
     def add_producer(
-        self, producer: Producer, interval: float = 5, pause: Optional[float] = None
+        self,
+        producer: Producer,
+        interval: float = 5,
+        pause: Optional[float] = None,
+        delay: Optional[float] = None,
     ):
-        self._loop.create_task(self._producer_handler(producer, interval, pause))
+        self._loop.create_task(self._producer_handler(producer, interval, pause, delay))
         producer.register_producer_callback(self._producer_callback)
 
     def add_consumer(self, consumer: Consumer):
@@ -98,13 +108,13 @@ class AsyncHandler:
     def run_in_loop(self, task: Callable[[], Coroutine[Any, Any, None]]):
         asyncio.ensure_future(task(), loop=self._loop)
 
-    async def shutdown(self):
+    async def shutdown(self, delay: float = 1):
         self._stop_producers = True
         print("Producers stopped")
         for task in self._cleanup_tasks:
             await task()
-        print("Cleanup tasks done")
-        await asyncio.sleep(1)
+        print(f"Cleanup tasks done, waiting {delay}sec")
+        await asyncio.sleep(delay)
         for task in asyncio.all_tasks(self._loop):
             print("Killing one task")
             task.cancel()

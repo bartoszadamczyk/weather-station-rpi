@@ -39,7 +39,7 @@ def run():
     if CONFIG["RELAY"]:
         relay_collection = RelayHandler(CONFIG["RELAY"])
         for relay in relay_collection:
-            async_handler.add_producer(relay, 60)
+            async_handler.add_producer(relay, 60, delay=60)
         async_handler.run_in_loop(relay_collection.init)
         async_handler.add_cleanup(relay_collection.cleanup)
 

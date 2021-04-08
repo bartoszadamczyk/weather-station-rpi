@@ -22,7 +22,6 @@ class Relay(Producer):
     async def init(self):
         if self._is_active:
             return
-        print("Init for one relay started")
         self._state = 0
         self._is_active = True
         await run_in_executor(
@@ -43,15 +42,11 @@ class Relay(Producer):
             await self._callback(self._get_reading(METRIC_TYPE.CHANGE))
 
     async def cleanup(self):
-        print("In Clean up")
         if self._is_active:
-            print("in active")
             self._is_active = False
             self._state = 0
             await run_in_executor(GPIO.cleanup, self._pin)
-            print("cleaned one GPIO")
             await self._callback(self._get_reading(METRIC_TYPE.CLEANUP))
-            print("sent metric about clean up")
 
     @property
     def component_id(self) -> str:
@@ -94,17 +89,14 @@ class RelayHandler:
         yield from self._collection
 
     async def init(self):
-        print("Manual init started")
         for rely in self:
             await rely.init()
 
     async def cleanup(self):
-        print("Manual cleanup started")
         for rely in self:
-            print("Manual cleanup for 1")
             await rely.cleanup()
 
 
 def cleanup_gpio():
-    print("Cleaning up gpio")
+    print("Final GPIO cleanup")
     GPIO.cleanup()
