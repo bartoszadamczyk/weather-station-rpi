@@ -6,7 +6,7 @@ RUN apt-get update && apt-get upgrade \
         libgpiod2 \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install w1thermsensor RPi.GPIO adafruit-circuitpython-dht boto3 asyncio websockets
+RUN pip install w1thermsensor RPi.GPIO adafruit-circuitpython-dht adafruit-circuitpython-bme680 boto3 asyncio websockets
 
 RUN mkdir -p /usr/src
 COPY app /usr/src/app

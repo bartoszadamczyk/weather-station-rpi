@@ -1,4 +1,6 @@
 Adafruit-Blinka==6.0.1
+adafruit-circuitpython-bme680==3.3.2
+adafruit-circuitpython-busdevice==5.0.6
 adafruit-circuitpython-dht==3.5.4
 Adafruit-PlatformDetect==3.0.0
 Adafruit-PureIO==1.1.8
