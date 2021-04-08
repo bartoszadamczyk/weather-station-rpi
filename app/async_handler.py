@@ -92,8 +92,11 @@ class AsyncHandler:
             for task in self._consumer_tasks:
                 await task.consume_reading(reading)
 
-    def add_cleanup(self, task: Callable[[None], Coroutine[Any, Any, None]]):
+    def add_cleanup(self, task: Callable[[], Coroutine[Any, Any, None]]):
         self._cleanup_tasks.append(task)
+
+    def run_in_loop(self, task: Callable[[], Coroutine[Any, Any, None]]):
+        asyncio.ensure_future(task(), loop=self._loop)
 
     async def shutdown(self):
         self._stop_producers = True

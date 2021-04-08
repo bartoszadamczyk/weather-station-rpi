@@ -30,7 +30,7 @@ def run():
         async_handler.add_producer(create_cpu_sensor())
     if CONFIG["DHT22"]:
         for pin in CONFIG["DHT22"]:
-            async_handler.add_producer(create_dht22_sensor(pin), 5, 2)
+            async_handler.add_producer(create_dht22_sensor(pin), 1, 2)
     if CONFIG["DS18B20"]:
         for sensor in discover_ds18b20_sensors():
             async_handler.add_producer(sensor)
@@ -40,6 +40,7 @@ def run():
         relay_collection = RelayHandler(CONFIG["RELAY"])
         for relay in relay_collection:
             async_handler.add_producer(relay, 60)
+        async_handler.run_in_loop(relay_collection.init)
         async_handler.add_cleanup(relay_collection.cleanup)
 
     # Create consumers
@@ -52,6 +53,7 @@ def run():
         async_handler.start()
     finally:
         cleanup_gpio()
+
 
 # Manual relay trigger
 # Way for alarm to call relay
