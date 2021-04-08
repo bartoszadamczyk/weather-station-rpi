@@ -126,7 +126,6 @@ class BME680Sensor(Producer):
     def supported_metrics(self) -> List[METRIC_TYPE]:
         return [
             METRIC_TYPE.TEMPERATURE,
-            METRIC_TYPE.RELATIVE_HUMIDITY,
             METRIC_TYPE.HUMIDITY,
             METRIC_TYPE.PRESSURE,
             METRIC_TYPE.GAS,
