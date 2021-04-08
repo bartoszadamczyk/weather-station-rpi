@@ -46,10 +46,14 @@ You can get it on [The PiHut](https://thepihut.com/products/dht22-temperature-hu
 
 ![Weather station schematics for DHT22 sensor](docs/weather-station-schematics-DHT22.svg)
 
-### BME680: Temperature, Humidity, Pressure and Gas Sensor
+### BME680: Temperature, Humidity, Pressure, Altitude and Gas Sensor
+
+Overall very nice sensor, accurate, stable and versatile. On board chip is from Bosch, supports temperature, humidity,
+pressure, altitude and gas, although last two require calibration.  
 
 You can get it
-on [The PiHut](https://thepihut.com/products/adafruit-bme680-temperature-humidity-pressure-and-gas-sensor-ada3660).
+on [The PiHut](https://thepihut.com/products/adafruit-bme680-temperature-humidity-pressure-and-gas-sensor-ada3660)
+and [Pimoroni](https://shop.pimoroni.com/products/bme680-breakout)
 
 ![Weather station schematics for BME680 sensor](docs/weather-station-schematics-BME680.svg)
 
