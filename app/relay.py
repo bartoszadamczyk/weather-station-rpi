@@ -14,43 +14,50 @@ GPIO.setmode(GPIO.BCM)
 class Relay(Producer):
     def __init__(self, pin: int):
         super().__init__()
-        self.pin = pin
-        self.state = 0
-        self.callback = None
+        self._pin = pin
+        self._state = 0
+        self._is_active = False
         GPIO.setup(pin, GPIO.OUT, initial=GPIO.HIGH)
 
     async def init(self):
-        self.state = 0
+        if self._is_active:
+            return
+        self._state = 0
+        self._is_active = True
         await run_in_executor(
             functools.partial(
                 GPIO.setup,
                 data={
-                    "channel_or_chan_list": self.pin,
+                    "channel_or_chan_list": self._pin,
                     "mode": GPIO.OUT,
                     "initial": GPIO.HIGH,
                 },
             )
         )
-        await self.callback(self._get_reading(METRIC_TYPE.INIT))
+        await self._callback(self._get_reading(METRIC_TYPE.INIT))
 
     async def up(self):
-        self.state = 1
-        await run_in_executor(GPIO.output, self.pin, GPIO.LOW)
-        await self.callback(self._get_reading(METRIC_TYPE.CHANGE))
+        if self._is_active and self._state == 0:
+            self._state = 1
+            await run_in_executor(GPIO.output, self._pin, GPIO.LOW)
+            await self._callback(self._get_reading(METRIC_TYPE.CHANGE))
 
     async def down(self):
-        self.state = 0
-        await run_in_executor(GPIO.output, self.pin, GPIO.HIGH)
-        await self.callback(self._get_reading(METRIC_TYPE.CHANGE))
+        if self._is_active and self._state == 1:
+            self._state = 0
+            await run_in_executor(GPIO.output, self._pin, GPIO.HIGH)
+            await self._callback(self._get_reading(METRIC_TYPE.CHANGE))
 
     async def cleanup(self):
-        self.state = 0
-        await run_in_executor(GPIO.cleanup, self.pin)
-        await self.callback(self._get_reading(METRIC_TYPE.CLEANUP))
+        if self._is_active:
+            self._is_active = False
+            self._state = 0
+            await run_in_executor(GPIO.cleanup, self._pin)
+            await self._callback(self._get_reading(METRIC_TYPE.CLEANUP))
 
     @property
     def component_id(self) -> str:
-        return f"pin{self.pin}"
+        return f"pin{self._pin}"
 
     @property
     def component_type(self) -> COMPONENT_TYPE:
@@ -61,7 +68,7 @@ class Relay(Producer):
         return [METRIC_TYPE.STATE]
 
     def _get_reading(self, metric: METRIC_TYPE):
-        return Reading(self.component_type, self.component_id, metric, self.state)
+        return Reading(self.component_type, self.component_id, metric, self._state)
 
     async def get_reading(self, metric: METRIC_TYPE) -> Optional[Reading]:
         if metric in self.supported_metrics:
@@ -89,10 +96,12 @@ class RelayHandler:
         yield from self._collection
 
     async def init(self):
-        [await relay.init() for relay in self]
+        for rely in self:
+            await rely.init()
 
     async def cleanup(self):
-        [await relay.cleanup() for relay in self]
+        for rely in self:
+            await rely.cleanup()
 
 
 def cleanup_gpio():

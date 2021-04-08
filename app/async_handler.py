@@ -8,10 +8,11 @@ import asyncio
 
 from .constants import COMPONENT_TYPE, METRIC_TYPE
 from .reading import Reading
+from .relay import cleanup_gpio
 
 
 class Producer(ABC):
-    callback = None
+    _callback = None
 
     @property
     @abstractmethod
@@ -35,7 +36,7 @@ class Producer(ABC):
     def register_producer_callback(
         self, callback: Callable[[Reading], Coroutine[Any, Any, None]]
     ):
-        self.callback = callback
+        self._callback = callback
 
 
 class Consumer(Protocol):
@@ -98,10 +99,10 @@ class AsyncHandler:
     async def shutdown(self):
         self._stop_producers = True
         print("Producers stopped")
-        await asyncio.sleep(1)
         for task in self._cleanup_tasks:
             await task()
         print("Cleanup tasks done")
+        await asyncio.sleep(1)
         for task in asyncio.all_tasks(self._loop):
             print("Killing one task")
             task.cancel()
@@ -121,6 +122,7 @@ class AsyncHandler:
         finally:
             self._thread_pool_executor.shutdown()
             print("Thread pool killed")
+            cleanup_gpio()
 
 
 T = TypeVar("T")
