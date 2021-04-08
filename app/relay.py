@@ -26,14 +26,7 @@ class Relay(Producer):
         self._state = 0
         self._is_active = True
         await run_in_executor(
-            functools.partial(
-                GPIO.setup,
-                data={
-                    "channel": self._pin,
-                    "mode": GPIO.OUT,
-                    "initial": GPIO.HIGH,
-                },
-            )
+            functools.partial(GPIO.setup, self._pin, GPIO.OUT, initial=GPIO.HIGH)
         )
         await self._callback(self._get_reading(METRIC_TYPE.INIT))
 
