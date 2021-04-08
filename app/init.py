@@ -7,6 +7,7 @@ from .sensor import (
     create_cpu_sensor,
     discover_ds18b20_sensors,
     create_dht22_sensor,
+    create_bme680_sensor,
 )
 
 DEVICE_UUID = os.environ["BALENA_DEVICE_UUID"]
@@ -15,7 +16,7 @@ DEFAULT_CONFIG = {
     "CPU": True,
     "DHT22": [17],
     "DS18B20": True,
-    "BME689": False,
+    "BME689": True,
     "RELAY": [26, 20, 21],
 }
 
@@ -34,6 +35,11 @@ def run():
     if CONFIG["DS18B20"]:
         for sensor in discover_ds18b20_sensors():
             async_handler.add_producer(sensor)
+    if CONFIG["DS18B20"]:
+        for sensor in discover_ds18b20_sensors():
+            async_handler.add_producer(sensor)
+    if CONFIG["DS18B20"]:
+        async_handler.add_producer(create_bme680_sensor())
 
     # Create relays
     if CONFIG["RELAY"]:
