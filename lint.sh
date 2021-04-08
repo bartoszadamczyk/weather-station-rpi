@@ -1,3 +1,3 @@
 #!/bin/sh
 
-black . && flake8 && mypy -m app
+black . && flake8 && mypy .

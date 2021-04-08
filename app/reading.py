@@ -1,76 +1,41 @@
 from datetime import datetime, timezone
-from statistics import mean
-from typing import Optional, List
 
-
-class METRIC:
-    TEMPERATURE = "HUMIDITY"
-    HUMIDITY = "HUMIDITY"
+from .constants import COMPONENT_TYPE, METRIC_TYPE
 
 
 class Reading:
     def __init__(
         self,
-        device_uuid: str,
-        sensor_id: str,
-        sensor_model: str,
-        temperature: float,
-        humidity: Optional[float] = None,
+        component_type: COMPONENT_TYPE,
+        component_id: str,
+        metric: METRIC_TYPE,
+        value: float,
     ):
-        self.datetime = datetime.now(tz=timezone.utc)
-        self.device_uuid = device_uuid
-        self.sensor_id = sensor_id
-        self.sensor_model = sensor_model
-        self.temperature = temperature
-        self.humidity = humidity
+        self.created_on = datetime.now(tz=timezone.utc)
+        self.component_type = component_type
+        self.component_id = component_id
+        self.metric = metric
+        self.value = value
 
-    def get(self):
-        return [METRIC.TEMPERATURE, METRIC.HUMIDITY]
+    @property
+    def timestamp(self):
+        return int(self.created_on.timestamp() * 1000)
 
-    def __getitem__(self, metric: str):
-        if metric == METRIC.TEMPERATURE:
-            return self.temperature
-        if metric == METRIC.HUMIDITY:
-            return self.humidity
-        return None
+    @property
+    def iso_date(self):
+        return self.created_on.isoformat()[:23]
 
     def __str__(self):
-        temperature = f"{self.sensor_id} temperature {self.temperature:.2f}C"
-        if self.humidity:
-            return f"{temperature} humidity {self.humidity:.2f}"
-        return temperature
+        return (
+            f"{self.iso_date} {self.metric.value} "
+            f"{self.component_type.value} {self.component_id} {self.value:.2f}"
+        )
 
     def as_dict(self):
         return {
-            "datetime": int(self.datetime.timestamp() * 1000),
-            "device_uuid": self.device_uuid,
-            "sensor_id": self.sensor_id,
-            "sensor_model": self.sensor_model,
-            "temperature": self.temperature,
-            "humidity": self.humidity,
+            "created_on": self.timestamp,
+            "component_type": self.component_type.value,
+            "component_id": self.component_id,
+            "metric": self.metric.value,
+            "value": self.value,
         }
-
-
-class ReadingCollection:
-    def __init__(self, max_size: int = 10):
-        self._max_size = max_size
-        self._collection: List[Reading] = []
-
-    def __iter__(self):
-        yield from self._collection
-
-    def add_reading(self, reading: Reading):
-        self._collection.insert(0, reading)
-        self._collection = self._collection[0 : self._max_size]
-
-    def get_value(self, metric: str = METRIC.TEMPERATURE, window: int = 5):
-        readings = [
-            reading[metric]
-            for reading in self._collection[0:window]
-            if reading[metric] is not None
-        ]
-        if len(readings) > 1:
-            return mean(readings)
-        if len(readings) == 1:
-            return readings[0]
-        return None
