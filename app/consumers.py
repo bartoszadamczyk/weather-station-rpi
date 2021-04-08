@@ -10,6 +10,8 @@ class ReadingsLogger:
         if self.count < 200 or self.count % 100 < 10:
             print(reading)
         self.count += 1
+        if self.count >= 1000000:
+            self.count = 1000
 
 
 class LiveSQSConsumer:

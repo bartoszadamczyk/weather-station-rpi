@@ -1,76 +1,48 @@
-from abc import ABC, abstractmethod
 from typing import Optional, List
 
-import asyncio
 from adafruit_dht import DHT22  # type: ignore
 from adafruit_blinka.microcontroller.bcm283x.pin import Pin  # type: ignore
 from w1thermsensor import W1ThermSensor  # type: ignore
 
-from .async_handler import run_in_executor
-from .constants import MODEL, METRIC
+from .async_handler import run_in_executor, Producer
+from .constants import COMPONENT_TYPE, METRIC_TYPE
 from .helper import get_cpu_temperature
 from .reading import Reading
 
 
-class Sensor(ABC):
-    def __init__(self):
-        super().__init__()
-
-    @property
-    @abstractmethod
-    def id(self) -> str:
-        pass
-
-    @property
-    @abstractmethod
-    def model(self) -> MODEL:
-        pass
-
-    @property
-    @abstractmethod
-    def metrics(self) -> List[METRIC]:
-        pass
-
-    @abstractmethod
-    async def get_readings(self) -> List[Reading]:
-        pass
-
-
-class DHT22Sensor(Sensor):
+class DHT22Sensor(Producer):
     def __init__(self, pointer: DHT22, pin: Pin):
         super().__init__()
         self.pointer = pointer
         self.pin = pin
 
     @property
-    def id(self) -> str:
+    def component_id(self) -> str:
         return f"pin{self.pin}"
 
     @property
-    def model(self) -> MODEL:
-        return MODEL.DHT22
+    def component_type(self) -> COMPONENT_TYPE:
+        return COMPONENT_TYPE.DHT22
 
     @property
-    def metrics(self) -> List[METRIC]:
-        return [METRIC.TEMPERATURE, METRIC.HUMIDITY]
+    def supported_metrics(self) -> List[METRIC_TYPE]:
+        return [METRIC_TYPE.TEMPERATURE, METRIC_TYPE.HUMIDITY]
 
-    def _get_metric_value(self, metric: METRIC) -> Optional[float]:
+    def _get_metric_value(self, metric: METRIC_TYPE) -> Optional[float]:
         try:
-            if metric == METRIC.TEMPERATURE:
+            if metric == METRIC_TYPE.TEMPERATURE:
                 return self.pointer.temperature
             return self.pointer.humidity
         except RuntimeError:
             # Reading DHT22 fails a lot...
             return None
 
-    async def get_readings(self) -> List[Reading]:
-        readings = []
-        for metric in self.metrics:
+    async def get_reading(self, metric: METRIC_TYPE) -> Optional[Reading]:
+        if metric in self.supported_metrics:
             value = await run_in_executor(self._get_metric_value, metric)
             if value:
-                readings.append(Reading(self.model, self.id, metric, value))
-            await asyncio.sleep(2)
-        return readings
+                return Reading(self.component_type, self.component_id, metric, value)
+        return None
 
 
 def create_dht22_sensor(pin: int) -> DHT22Sensor:
@@ -78,48 +50,52 @@ def create_dht22_sensor(pin: int) -> DHT22Sensor:
     return DHT22Sensor(DHT22(pin), pin)
 
 
-class DS18B20Sensor(Sensor):
+class DS18B20Sensor(Producer):
     def __init__(self, pointer: W1ThermSensor):
         super().__init__()
         self.pointer = pointer
 
     @property
-    def id(self) -> str:
+    def component_id(self) -> str:
         return self.pointer.id
 
     @property
-    def model(self) -> MODEL:
-        return MODEL.DS18B20
+    def component_type(self) -> COMPONENT_TYPE:
+        return COMPONENT_TYPE.DS18B20
 
     @property
-    def metrics(self) -> List[METRIC]:
-        return [METRIC.TEMPERATURE]
+    def supported_metrics(self) -> List[METRIC_TYPE]:
+        return [METRIC_TYPE.TEMPERATURE]
 
-    async def get_readings(self) -> List[Reading]:
-        value = await run_in_executor(self.pointer.get_temperature)
-        return [Reading(self.model, self.id, METRIC.TEMPERATURE, value)]
+    async def get_reading(self, metric: METRIC_TYPE) -> Optional[Reading]:
+        if metric == METRIC_TYPE.TEMPERATURE:
+            value = await run_in_executor(self.pointer.get_temperature)
+            return Reading(self.component_type, self.component_id, metric, value)
+        return None
 
 
 def discover_ds18b20_sensors() -> List[DS18B20Sensor]:
     return [DS18B20Sensor(pointer) for pointer in W1ThermSensor.get_available_sensors()]
 
 
-class CPUSensor(Sensor):
+class CPUSensor(Producer):
     @property
-    def id(self) -> str:
+    def component_id(self) -> str:
         return "cpu"
 
     @property
-    def model(self) -> MODEL:
-        return MODEL.CPU
+    def component_type(self) -> COMPONENT_TYPE:
+        return COMPONENT_TYPE.CPU
 
     @property
-    def metrics(self) -> List[METRIC]:
-        return [METRIC.TEMPERATURE]
+    def supported_metrics(self) -> List[METRIC_TYPE]:
+        return [METRIC_TYPE.TEMPERATURE]
 
-    async def get_readings(self) -> List[Reading]:
-        value = await run_in_executor(get_cpu_temperature)
-        return [Reading(self.model, self.id, METRIC.TEMPERATURE, value)]
+    async def get_reading(self, metric: METRIC_TYPE) -> Optional[Reading]:
+        if metric == METRIC_TYPE.TEMPERATURE:
+            value = await run_in_executor(get_cpu_temperature)
+            return Reading(self.component_type, self.component_id, metric, value)
+        return None
 
 
 def create_cpu_sensor() -> CPUSensor:
