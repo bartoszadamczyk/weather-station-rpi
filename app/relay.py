@@ -88,11 +88,11 @@ class RelayHandler:
     def __iter__(self):
         yield from self._collection
 
-    def init(self):
-        [relay.init() for relay in self]
+    async def init(self):
+        [await relay.init() for relay in self]
 
-    def cleanup(self):
-        [relay.cleanup() for relay in self]
+    async def cleanup(self):
+        [await relay.cleanup() for relay in self]
 
 
 def cleanup_gpio():
