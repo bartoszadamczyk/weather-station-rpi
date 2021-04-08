@@ -68,7 +68,8 @@ class AsyncHandler:
         while not self._shutdown_started:
             for metric in producer.supported_metrics:
                 reading = await producer.get_reading(metric)
-                await self._queue.put(reading)
+                if reading:
+                    await self._queue.put(reading)
                 if pause:
                     await self.sleep(pause)
             await self.sleep(interval)
