@@ -1,4 +1,5 @@
-from typing import Protocol, List
+from concurrent.futures import ThreadPoolExecutor
+from typing import Protocol, List, Callable, Any, TypeVar
 
 import asyncio
 
@@ -17,8 +18,10 @@ class Consumer(Protocol):
 
 class AsyncHandler:
     def __init__(self):
-        self.queue = asyncio.Queue()
+        self.thread_pool_executor = ThreadPoolExecutor(max_workers=5)
         self.loop = asyncio.get_event_loop()
+        self.loop.set_default_executor(self.thread_pool_executor)
+        self.queue = asyncio.Queue()
         self.producer_tasks = []
         self.consumer_tasks = []
         self.cleanup_tasks = []
@@ -50,5 +53,14 @@ class AsyncHandler:
         try:
             self.loop.run_forever()
         finally:
+            self.thread_pool_executor.shutdown()
             for task in self.cleanup_tasks:
                 task()
+
+
+T = TypeVar("T")
+
+
+async def run_in_executor(func: Callable[..., T], *args: Any) -> T:
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, func, *args)

@@ -6,6 +6,7 @@ from adafruit_dht import DHT22  # type: ignore
 from adafruit_blinka.microcontroller.bcm283x.pin import Pin  # type: ignore
 from w1thermsensor import W1ThermSensor  # type: ignore
 
+from .async_handler import run_in_executor
 from .constants import MODEL, METRIC
 from .helper import get_cpu_temperature
 from .reading import Reading
@@ -66,7 +67,7 @@ class DHT22Sensor(Sensor):
     async def get_readings(self) -> List[Reading]:
         readings = []
         for metric in self.metrics:
-            value = self._get_metric_value(metric)
+            value = await run_in_executor(self._get_metric_value, metric)
             if value:
                 readings.append(
                     Reading(self.device_uuid, self.model, self.id, metric, value)
@@ -98,14 +99,9 @@ class DS18B20Sensor(Sensor):
         return [METRIC.TEMPERATURE]
 
     async def get_readings(self) -> List[Reading]:
+        value = await run_in_executor(self.pointer.get_temperature)
         return [
-            Reading(
-                self.device_uuid,
-                self.model,
-                self.id,
-                METRIC.TEMPERATURE,
-                self.pointer.get_temperature(),
-            )
+            Reading(self.device_uuid, self.model, self.id, METRIC.TEMPERATURE, value)
         ]
 
 
@@ -130,14 +126,9 @@ class CPUSensor(Sensor):
         return [METRIC.TEMPERATURE]
 
     async def get_readings(self) -> List[Reading]:
+        value = await run_in_executor(get_cpu_temperature)
         return [
-            Reading(
-                self.device_uuid,
-                self.model,
-                self.id,
-                METRIC.TEMPERATURE,
-                get_cpu_temperature(),
-            )
+            Reading(self.device_uuid, self.model, self.id, METRIC.TEMPERATURE, value)
         ]
 
 
