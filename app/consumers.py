@@ -18,7 +18,7 @@ class LiveSQSConsumer:
     def __init__(self, device_id: str, queue_url: str):
         self.device_id = device_id
         self.queue_url = queue_url
-        self.base = {"type": "live_reading", "device_id": device_id}
+        self.base = {"action": "live_reading", "device_id": device_id}
 
     async def consume_reading(self, reading: Reading):
         body = {**self.base, **reading.as_dict()}
