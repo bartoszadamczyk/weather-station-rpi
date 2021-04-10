@@ -27,8 +27,8 @@ class Reading:
 
     def __str__(self):
         return (
-            f"{self.iso_date} {self.metric.value} "
-            f"{self.component_type.value} {self.component_id} {self.value:.2f}"
+            f"{self.iso_date} {self.component_type.value} "
+            f"{self.component_id} {self.metric.value} {self.value:.2f}"
         )
 
     def as_dict(self):
