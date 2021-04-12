@@ -29,7 +29,7 @@ def run():
         async_handler.add_producer(create_dht22_sensor(pin), 1, 2)
     for sensor in discover_ds18b20_sensors():
         async_handler.add_producer(sensor)
-    if os.getenv("BME689"):
+    if os.getenv("BME680"):
         async_handler.add_producer(create_bme680_sensor())
 
     # Create relays
