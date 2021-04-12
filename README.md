@@ -1,6 +1,13 @@
-# Weather station: RPi
+# Weather station: Raspberry Pi
 
 Cloud based Raspberry Pi weather station
+
+### All repositories
+- [Web Client](https://github.com/bartoszadamczyk/weather-station-client)
+- [Cloud API](https://github.com/bartoszadamczyk/weather-station-cloud)
+- [Raspberry Pi](https://github.com/bartoszadamczyk/weather-station-rpi)
+
+![All sensors module](docs/all-sensors-module.jpg)
 
 ## Sensors and relays
 
