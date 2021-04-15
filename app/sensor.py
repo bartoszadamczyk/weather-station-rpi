@@ -116,7 +116,7 @@ class BME680Sensor(Producer):
 
     @property
     def component_id(self) -> str:
-        return "bme680"
+        return "0x77"
 
     @property
     def component_type(self) -> COMPONENT_TYPE:

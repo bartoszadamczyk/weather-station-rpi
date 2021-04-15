@@ -2,10 +2,13 @@
 
 Cloud based Raspberry Pi weather station
 
-### All repositories
-- [Web Client](https://github.com/bartoszadamczyk/weather-station-client)
+### Repositories
+
 - [Cloud API](https://github.com/bartoszadamczyk/weather-station-cloud)
-- [Raspberry Pi](https://github.com/bartoszadamczyk/weather-station-rpi)
+    - Web Client - Netlify, TypeScript, React, Immer, WebSockets, i18next, styled-components
+    - Cloud API - Terraform, Serverless, AWS API Gateway (with WebSockets), DynamoDB, SQS, TypeScript, AJV
+- [Raspberry Pi](https://github.com/bartoszadamczyk/weather-station-rpi) - Raspberry Pi, balena.io, Docker, Python,
+  AsyncIO, SQS, Mypy, Black, Flake8
 
 ![All sensors module](docs/all-sensors-module.jpg)
 
@@ -56,7 +59,7 @@ You can get it on [The PiHut](https://thepihut.com/products/dht22-temperature-hu
 ### BME680: Temperature, Humidity, Pressure, Altitude and Gas Sensor
 
 Overall very nice sensor, accurate, stable and versatile. On board chip is from Bosch, supports temperature, humidity,
-pressure, altitude and gas, although last two require calibration.  
+pressure, altitude and gas, although last two require calibration.
 
 You can get it
 on [The PiHut](https://thepihut.com/products/adafruit-bme680-temperature-humidity-pressure-and-gas-sensor-ada3660)
