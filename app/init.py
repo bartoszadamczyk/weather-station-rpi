@@ -1,3 +1,4 @@
+import sentry_sdk
 
 from .async_handler import AsyncHandler
 from .config import CONFIG
@@ -10,6 +11,9 @@ from .sensor import (
     create_bme680_sensor,
 )
 
+sentry_sdk.init(
+    server_name=CONFIG.DEVICE_ID
+)
 
 
 def run():
