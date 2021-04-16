@@ -78,11 +78,11 @@ You can get it on [The PiHut](https://thepihut.com/products/raspberry-pi-relay-b
 
 ![Weather station schematics for relay](docs/weather-station-schematics-relay.svg)
 
-
 ## How to deploy?
 
-1. If you want to use the dashboard, follow the steps in [Cloud API](https://github.com/bartoszadamczyk/weather-station-cloud).
-   You need `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION` and `AWS_SQS_DATA` from there.
+1. If you want to use the dashboard, follow the steps
+   in [Cloud API](https://github.com/bartoszadamczyk/weather-station-cloud). You need `AWS_ACCESS_KEY_ID`
+   , `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION` and `AWS_SQS_DATA` from there.
 2. Create a free [balena.io](balena.io) account (10 devices are for free!).
 3. Create your first `balena application`. Flash your device, connect to the internet and turn it on.
 4. Fork and clone this repository. You can deploy code to balena with:
@@ -99,43 +99,20 @@ You can get it on [The PiHut](https://thepihut.com/products/raspberry-pi-relay-b
 5. Great! Your Weather Station should work and already detect DS18B20 Temperature sensors!
 6. Now, have a look at the Device Configuration below to enable more features.
 
-### Device Configuration
-
-DS18B20 sensors discover is always turned on.
+## Device Configuration
 
 You can configure more features with `Device service variables`:
 
-#### To override BALENA_DEVICE_UUID, provide:
+| Feature                       | `ENV VARIABLES`                                                                       | Format            |
+|-------------------------------|---------------------------------------------------------------------------------------|-------------------|
+| Override `BALENA_DEVICE_UUID` | `DEVICE_ID`                                                                           | `string`          |
+| Enable Sentry                 | `SENTRY_DSN`, `SENTRY_ENVIRONMENT`                                                    | `string`          |
+| Enable DHT22 sensors          | `DHT22_PINS`                                                                          | `"[17]"`          |
+| Enable BME680 sensor          | `ENABLE_BME680`                                                                       | `True`            |
+| Enable Relays                 | `RELAY_PINS`                                                                          | `"[26, 20, 21]]"` |
+| Enable LiveSQSConsumer        | `AWS_ACCESS_KEY_ID` ,`AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION` and `AWS_SQS_DATA` | `string`          |
 
-- `DEVICE_ID = string`
-
-#### To enable Sentry, provide:
-
-- `SENTRY_DSN = string`
-- `SENTRY_ENVIRONMENT = string`
-
-#### To enable DHT22 sensors, provide:
-
-- `DHT22_PINS = "[17]"`
-
-#### To enable BME680 sensor, provide:
-
-- `ENABLE_BME680 = True`
-
-#### To enable Relays, provide:
-
-- `RELAY_PINS = "[26, 20, 21]]"`
-
-#### To enable LiveSQSConsumer, provide:
-
-- `AWS_ACCESS_KEY_ID = string`
-- `AWS_SECRET_ACCESS_KEY = string`
-- `AWS_DEFAULT_REGION = string`
-- `AWS_SQS_DATA = string`
-
-## Devices
-
-This project supports:
+## Supported Devices
 
 - Raspberry Pi 2 (armv7hf and up)
 - Raspberry Pi 3
