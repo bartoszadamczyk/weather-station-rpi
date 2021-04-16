@@ -6,7 +6,7 @@ from typing import Protocol, List, Callable, Any, TypeVar, Coroutine, Optional
 
 import asyncio
 
-from .constants import COMPONENT_TYPE, METRIC_TYPE
+from .constants import MODULE_TYPE, METRIC_TYPE
 from .reading import Reading
 
 
@@ -15,21 +15,21 @@ class Producer(ABC):
 
     @property
     @abstractmethod
-    def component_id(self) -> str:
+    def module_id(self) -> str:
         pass
 
     @property
     @abstractmethod
-    def component_type(self) -> COMPONENT_TYPE:
+    def module_type(self) -> MODULE_TYPE:
         pass
 
     @property
     @abstractmethod
-    def supported_metrics(self) -> List[METRIC_TYPE]:
+    def supported_metric_types(self) -> List[METRIC_TYPE]:
         pass
 
     @abstractmethod
-    async def get_reading(self, metric: METRIC_TYPE) -> Optional[Reading]:
+    async def get_reading(self, metric_type: METRIC_TYPE) -> Optional[Reading]:
         pass
 
     def register_producer_callback(
@@ -72,8 +72,8 @@ class AsyncHandler:
         if delay:
             await self.sleep(interval)
         while not self._stop_producers:
-            for metric in producer.supported_metrics:
-                reading = await producer.get_reading(metric)
+            for metric_type in producer.supported_metric_types:
+                reading = await producer.get_reading(metric_type)
                 if reading:
                     await self._queue.put(reading)
                 if pause:

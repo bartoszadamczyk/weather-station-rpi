@@ -4,7 +4,7 @@ from typing import List, Optional
 import RPi.GPIO as GPIO  # type: ignore
 
 from .async_handler import Producer, run_in_executor
-from .constants import COMPONENT_TYPE, METRIC_TYPE
+from .constants import MODULE_TYPE, METRIC_TYPE
 from .reading import Reading
 
 GPIO.setwarnings(False)
@@ -49,23 +49,23 @@ class Relay(Producer):
             await self._callback(self._get_reading(METRIC_TYPE.CLEANUP))
 
     @property
-    def component_id(self) -> str:
+    def module_id(self) -> str:
         return f"pin{self._pin}"
 
     @property
-    def component_type(self) -> COMPONENT_TYPE:
-        return COMPONENT_TYPE.RELAY
+    def module_type(self) -> MODULE_TYPE:
+        return MODULE_TYPE.RELAY
 
     @property
-    def supported_metrics(self) -> List[METRIC_TYPE]:
+    def supported_metric_types(self) -> List[METRIC_TYPE]:
         return [METRIC_TYPE.STATE]
 
-    def _get_reading(self, metric: METRIC_TYPE):
-        return Reading(self.component_type, self.component_id, metric, self._state)
+    def _get_reading(self, metric_type: METRIC_TYPE):
+        return Reading(self.module_type, self.module_id, metric_type, self._state)
 
-    async def get_reading(self, metric: METRIC_TYPE) -> Optional[Reading]:
-        if metric in self.supported_metrics:
-            return self._get_reading(metric)
+    async def get_reading(self, metric_type: METRIC_TYPE) -> Optional[Reading]:
+        if metric_type in self.supported_metric_types:
+            return self._get_reading(metric_type)
         return None
 
 
