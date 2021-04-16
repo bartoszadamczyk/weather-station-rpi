@@ -14,10 +14,6 @@ Cloud based Raspberry Pi weather station
 
 ## Sensors and relays
 
-- https://pinout.xyz/
-- https://www.circuito.io/app
-- https://lastminuteengineers.com/electronics/basic-electronics/
-
 ### DS18B20: Temperature Sensor
 
 Fast, accurate, and cheap temperature sensor. You can't go wrong with that one. It is available standalone as well as a
@@ -46,8 +42,8 @@ DS18B20. If you got some extra budget go for the BME280 or BME680.
 - Temperature readings in the range of -40 to 80°C with ±0.5°C accuracy.
 - Humidity readings in the range of 0-100% with ±2-5% accuracy.
 - It can work with both 3.3v and 5v.
-- It requires one GPIO per one sensor together with the pull up resistor.
-- This project suggest using `GPIO 17`, `GPIO 27`, `GPIO 22`, `GPIO 23` and `GPIO 24`.
+- It requires one GPIO per one sensor together with the pull-up resistor.
+- This project suggests using `GPIO 17`, `GPIO 27`, `GPIO 22`, `GPIO 23` and `GPIO 24`.
 - No unique id, GPIO number is used as an ID.
 - Pull up resistor of 4.7k-10k ohm is required.
 
@@ -59,7 +55,7 @@ You can get it on [The PiHut](https://thepihut.com/products/dht22-temperature-hu
 ### BME680: Temperature, Humidity, Pressure, Altitude and Gas Sensor
 
 Overall very nice sensor, accurate, stable and versatile. On board chip is from Bosch, supports temperature, humidity,
-pressure, altitude and gas, although last two require calibration.
+pressure, altitude and gas, although the last two require calibration.
 
 You can get it
 on [The PiHut](https://thepihut.com/products/adafruit-bme680-temperature-humidity-pressure-and-gas-sensor-ada3660)
@@ -71,7 +67,7 @@ and [Pimoroni](https://shop.pimoroni.com/products/bme680-breakout)
 
 You can use GPIOs as an output for your alarms. This can be used to control relays or other devices. **Remember to
 protect your GPIOs! Don't connect relays directly to your Raspberry Pi. This is going to break your board!** You need
-some transistors, diodes, resistors and preferably octocouplers to protect your device. If you don't want to build it
+some transistors, diodes, resistors and preferably an optocoupler to protect your device. If you don't want to build it
 yourself, buy a ready-made relay board. Just remember to pick one compatible with Raspberry Pi 3v3 GPIOs, like the one
 from [WaveShare](https://www.waveshare.com/wiki/RPi_Relay_Board).
 
@@ -81,6 +77,69 @@ from [WaveShare](https://www.waveshare.com/wiki/RPi_Relay_Board).
 You can get it on [The PiHut](https://thepihut.com/products/raspberry-pi-relay-board) or Amazon.
 
 ![Weather station schematics for relay](docs/weather-station-schematics-relay.svg)
+
+
+## How to deploy?
+
+1. If you want to use the dashboard, follow the steps in [Cloud API](https://github.com/bartoszadamczyk/weather-station-cloud).
+   You need `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION` and `AWS_SQS_DATA` from there.
+2. Create a free [balena.io](balena.io) account (10 devices are for free!).
+3. Create your first `balena application`. Flash your device, connect to the internet and turn it on.
+4. Fork and clone this repository. You can deploy code to balena with:
+    - [Github actions](./.github/workflows)
+        - Edit deploy workflows to match your setup:
+            - Use correct docker file for your device (for rpi2 you can use rpi3)
+            - In your `Repository` -> `Settings` -> `Actions secrets` add:
+                - `BALENA_API_TOKEN`
+                - `BALENA_APPLICATION_NAME_RPI_2` or any other vars you want to use
+    - Or manually with [git push](https://www.balena.io/docs/learn/deploy/deployment/#git-push)
+        - Copy correct `Dockerfile` from [docker/](docker) directory into your `root dir`
+        - Git push to balena
+5. In balenaCloud, in `Device Configuration` set `Define DT overlays` to `"w1-gpio"`.
+5. Great! Your Weather Station should work and already detect DS18B20 Temperature sensors!
+6. Now, have a look at the Device Configuration below to enable more features.
+
+### Device Configuration
+
+DS18B20 sensors discover is always turned on.
+
+You can configure more features with `Device service variables`:
+
+#### To override BALENA_DEVICE_UUID, provide:
+
+- `DEVICE_ID = string`
+
+#### To enable Sentry, provide:
+
+- `SENTRY_DSN = string`
+- `SENTRY_ENVIRONMENT = string`
+
+#### To enable DHT22 sensors, provide:
+
+- `DHT22_PINS = "[17]"`
+
+#### To enable BME680 sensor, provide:
+
+- `ENABLE_BME680 = True`
+
+#### To enable Relays, provide:
+
+- `RELAY_PINS = "[26, 20, 21]]"`
+
+#### To enable LiveSQSConsumer, provide:
+
+- `AWS_ACCESS_KEY_ID = string`
+- `AWS_SECRET_ACCESS_KEY = string`
+- `AWS_DEFAULT_REGION = string`
+- `AWS_SQS_DATA = string`
+
+## Devices
+
+This project supports:
+
+- Raspberry Pi 2 (armv7hf and up)
+- Raspberry Pi 3
+- Raspberry Pi 4
 
 ## Development
 
@@ -96,16 +155,16 @@ pip install -r requirements.txt
 pip freeze > requirements.txt
 ```
 
-### Run app
+### Run lint
 
 ```shell
-python -m app
+./lint.sh
 ```
 
-### Run dev
+## Sources
 
-```shell
-black . && flake8 && mypy -m app
-```
+- https://pinout.xyz/
+- https://www.circuito.io/app
+- https://lastminuteengineers.com/electronics/basic-electronics/
 
 
