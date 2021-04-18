@@ -1,5 +1,3 @@
-import sentry_sdk
-
 from .async_handler import AsyncHandler
 from .config import CONFIG
 from .consumers import ReadingsLogger, LiveSQSConsumer
@@ -9,10 +7,6 @@ from .sensor import (
     discover_ds18b20_sensors,
     create_dht22_sensor,
     create_bme680_sensor,
-)
-
-sentry_sdk.init(
-    server_name=CONFIG.DEVICE_ID
 )
 
 
