@@ -90,7 +90,10 @@ class AsyncHandler:
         pause: Optional[float] = None,
         delay: Optional[float] = None,
     ):
-        self._loop.create_task(self._producer_handler(producer, interval, pause, delay))
+        task_name = f"{producer.module_type.value}_{producer.module_id}"
+        self._loop.create_task(
+            self._producer_handler(producer, interval, pause, delay), name=task_name
+        )
         producer.register_producer_callback(self._producer_callback)
 
     def add_consumer(self, consumer: Consumer):
@@ -108,21 +111,34 @@ class AsyncHandler:
     def run_in_loop(self, task: Callable[[], Coroutine[Any, Any, None]]):
         asyncio.ensure_future(task(), loop=self._loop)
 
-    async def shutdown(self, delay: float = 2):
+    def stop_producers(self):
         self._stop_producers = True
         print("Producers stopped")
+
+    async def _run_cleanup_tasks(self):
         for task in self._cleanup_tasks:
             await task()
-        print(f"Cleanup tasks done, waiting {delay}sec")
-        await asyncio.sleep(delay)
+        print("Cleanup tasks done")
+
+    def _kill_all_remaining_tasks(self):
         for task in asyncio.all_tasks(self._loop):
             print("Killing one task: " + task.get_name())
+            task.print_stack()
             task.cancel()
+
+    async def shutdown(self, delay: float = 2):
+        self.stop_producers()
+        await self._run_cleanup_tasks()
+
+        print(f"Waiting {delay}sec")
+        await asyncio.sleep(delay)
+
+        self._kill_all_remaining_tasks()
         self._loop.stop()
         print("Loop stopped")
 
     def start(self):
-        self._loop.create_task(self._consumer_handler())
+        self._loop.create_task(self._consumer_handler(), name="consumer_handler")
         self._loop.add_signal_handler(
             signal.SIGINT, functools.partial(asyncio.ensure_future, self.shutdown())
         )
