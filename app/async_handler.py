@@ -108,7 +108,7 @@ class AsyncHandler:
     def run_in_loop(self, task: Callable[[], Coroutine[Any, Any, None]]):
         asyncio.ensure_future(task(), loop=self._loop)
 
-    async def shutdown(self, delay: float = 1):
+    async def shutdown(self, delay: float = 2):
         self._stop_producers = True
         print("Producers stopped")
         for task in self._cleanup_tasks:
@@ -116,7 +116,7 @@ class AsyncHandler:
         print(f"Cleanup tasks done, waiting {delay}sec")
         await asyncio.sleep(delay)
         for task in asyncio.all_tasks(self._loop):
-            print("Killing one task")
+            print("Killing one task: " + task.get_name())
             task.cancel()
         self._loop.stop()
         print("Loop stopped")
