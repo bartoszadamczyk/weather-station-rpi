@@ -2,7 +2,7 @@ from typing import Optional, List
 
 from adafruit_dht import DHT22  # type: ignore
 from adafruit_blinka.microcontroller.bcm283x.pin import Pin  # type: ignore
-from w1thermsensor import W1ThermSensor  # type: ignore
+from w1thermsensor import W1ThermSensor, SensorNotReadyError  # type: ignore
 from busio import I2C  # type: ignore
 import adafruit_bme680  # type: ignore
 import board  # type: ignore
@@ -97,10 +97,19 @@ class DS18B20Sensor(Producer):
     def supported_metric_types(self) -> List[METRIC_TYPE]:
         return [METRIC_TYPE.TEMPERATURE]
 
-    async def get_reading(self, metric_type: METRIC_TYPE) -> Optional[Reading]:
-        if metric_type != METRIC_TYPE.TEMPERATURE:
+    def _get_metric_value(self, metric_type: METRIC_TYPE) -> Optional[float]:
+        try:
+            if metric_type == METRIC_TYPE.TEMPERATURE:
+                return self._pointer.get_temperature()
             return None
-        metric_value = await run_in_executor(self._pointer.get_temperature)
+        except SensorNotReadyError:
+            print("Failed to read from DS18B20, check your wires")
+            return None
+
+    async def get_reading(self, metric_type: METRIC_TYPE) -> Optional[Reading]:
+        if metric_type not in self.supported_metric_types:
+            return None
+        metric_value = await run_in_executor(self._get_metric_value, metric_type)
         return Reading(self.module_type, self.module_id, metric_type, metric_value)
 
 
@@ -133,15 +142,19 @@ class BME680Sensor(Producer):
         ]
 
     def _get_metric_value(self, metric_type: METRIC_TYPE) -> Optional[float]:
-        if metric_type == METRIC_TYPE.TEMPERATURE:
-            return self._pointer.temperature
-        if metric_type == METRIC_TYPE.HUMIDITY:
-            return self._pointer.humidity
-        if metric_type == METRIC_TYPE.PRESSURE:
-            return self._pointer.pressure
-        if metric_type == METRIC_TYPE.GAS:
-            return self._pointer.gas
-        return None
+        try:
+            if metric_type == METRIC_TYPE.TEMPERATURE:
+                return self._pointer.temperature
+            if metric_type == METRIC_TYPE.HUMIDITY:
+                return self._pointer.humidity
+            if metric_type == METRIC_TYPE.PRESSURE:
+                return self._pointer.pressure
+            if metric_type == METRIC_TYPE.GAS:
+                return self._pointer.gas
+            return None
+        except OSError:
+            print("Failed to read from BME680, check your wires")
+            return None
 
     async def get_reading(self, metric_type: METRIC_TYPE) -> Optional[Reading]:
         if metric_type not in self.supported_metric_types:
