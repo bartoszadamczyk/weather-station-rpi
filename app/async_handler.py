@@ -104,6 +104,7 @@ class AsyncHandler:
             reading = await self._queue.get()
             for task in self._consumer_tasks:
                 await task.consume_reading(reading)
+            self._queue.task_done()
 
     def add_cleanup(self, task: Callable[[], Coroutine[Any, Any, None]]):
         self._cleanup_tasks.append(task)
@@ -120,20 +121,13 @@ class AsyncHandler:
             await task()
         print("Cleanup tasks done")
 
-    def _kill_all_remaining_tasks(self):
-        for task in asyncio.all_tasks(self._loop):
-            print("Killing one task: " + task.get_name())
-            task.print_stack()
-            task.cancel()
-
-    async def shutdown(self, delay: float = 2):
+    async def shutdown(self):
         self.stop_producers()
         await self._run_cleanup_tasks()
 
-        print(f"Waiting {delay}sec")
-        await asyncio.sleep(delay)
+        await self._queue.join()
+        print("Done all tasks in the queue")
 
-        self._kill_all_remaining_tasks()
         self._loop.stop()
         print("Loop stopped")
 
