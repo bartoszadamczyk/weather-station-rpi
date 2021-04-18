@@ -10,13 +10,13 @@ To enable Sentry, provide:
 - SENTRY_ENVIRONMENT = string
 
 To enable DHT22 sensors, provide:
-- DHT22_PINS = "[17]"
+- DHT22_PINS = [17]
 
 To enable BME680 sensor, provide:
 - ENABLE_BME680 = True
 
 To enable Relays, provide:
-- RELAY_PINS = "[26,20,21]"
+- RELAY_PINS = [26,20,21]
 
 To enable LiveSQSConsumer, provide:
 - AWS_ACCESS_KEY_ID = string
@@ -27,7 +27,7 @@ To enable LiveSQSConsumer, provide:
 
 _DEVICE_ID = os.getenv("DEVICE_ID")
 _DHT22_PINS = os.getenv("DHT22_PINS")
-_RELAY_PINS = os.getenv("_RELAY_PINS")
+_RELAY_PINS = os.getenv("RELAY_PINS")
 
 
 class CONFIG:
