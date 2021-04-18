@@ -6,7 +6,7 @@ from typing import Protocol, List, Callable, Any, TypeVar, Coroutine, Optional
 
 import asyncio
 
-from .constants import COMPONENT_TYPE, METRIC_TYPE
+from .constants import MODULE_TYPE, METRIC_TYPE
 from .reading import Reading
 
 
@@ -15,21 +15,21 @@ class Producer(ABC):
 
     @property
     @abstractmethod
-    def component_id(self) -> str:
+    def module_id(self) -> str:
         pass
 
     @property
     @abstractmethod
-    def component_type(self) -> COMPONENT_TYPE:
+    def module_type(self) -> MODULE_TYPE:
         pass
 
     @property
     @abstractmethod
-    def supported_metrics(self) -> List[METRIC_TYPE]:
+    def supported_metric_types(self) -> List[METRIC_TYPE]:
         pass
 
     @abstractmethod
-    async def get_reading(self, metric: METRIC_TYPE) -> Optional[Reading]:
+    async def get_reading(self, metric_type: METRIC_TYPE) -> Optional[Reading]:
         pass
 
     def register_producer_callback(
@@ -72,8 +72,8 @@ class AsyncHandler:
         if delay:
             await self.sleep(interval)
         while not self._stop_producers:
-            for metric in producer.supported_metrics:
-                reading = await producer.get_reading(metric)
+            for metric_type in producer.supported_metric_types:
+                reading = await producer.get_reading(metric_type)
                 if reading:
                     await self._queue.put(reading)
                 if pause:
@@ -90,7 +90,10 @@ class AsyncHandler:
         pause: Optional[float] = None,
         delay: Optional[float] = None,
     ):
-        self._loop.create_task(self._producer_handler(producer, interval, pause, delay))
+        task_name = f"{producer.module_type.value}_{producer.module_id}"
+        self._loop.create_task(
+            self._producer_handler(producer, interval, pause, delay), name=task_name
+        )
         producer.register_producer_callback(self._producer_callback)
 
     def add_consumer(self, consumer: Consumer):
@@ -101,6 +104,7 @@ class AsyncHandler:
             reading = await self._queue.get()
             for task in self._consumer_tasks:
                 await task.consume_reading(reading)
+            self._queue.task_done()
 
     def add_cleanup(self, task: Callable[[], Coroutine[Any, Any, None]]):
         self._cleanup_tasks.append(task)
@@ -108,21 +112,27 @@ class AsyncHandler:
     def run_in_loop(self, task: Callable[[], Coroutine[Any, Any, None]]):
         asyncio.ensure_future(task(), loop=self._loop)
 
-    async def shutdown(self, delay: float = 1):
+    def stop_producers(self):
         self._stop_producers = True
         print("Producers stopped")
+
+    async def _run_cleanup_tasks(self):
         for task in self._cleanup_tasks:
             await task()
-        print(f"Cleanup tasks done, waiting {delay}sec")
-        await asyncio.sleep(delay)
-        for task in asyncio.all_tasks(self._loop):
-            print("Killing one task")
-            task.cancel()
+        print("Cleanup tasks done")
+
+    async def shutdown(self):
+        self.stop_producers()
+        await self._run_cleanup_tasks()
+
+        await self._queue.join()
+        print("Done all tasks in the queue")
+
         self._loop.stop()
         print("Loop stopped")
 
     def start(self):
-        self._loop.create_task(self._consumer_handler())
+        self._loop.create_task(self._consumer_handler(), name="consumer_handler")
         self._loop.add_signal_handler(
             signal.SIGINT, functools.partial(asyncio.ensure_future, self.shutdown())
         )

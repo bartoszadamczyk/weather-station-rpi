@@ -1,21 +1,21 @@
 from datetime import datetime, timezone
 
-from .constants import COMPONENT_TYPE, METRIC_TYPE
+from .constants import MODULE_TYPE, METRIC_TYPE
 
 
 class Reading:
     def __init__(
         self,
-        component_type: COMPONENT_TYPE,
-        component_id: str,
-        metric: METRIC_TYPE,
-        value: float,
+        module_type: MODULE_TYPE,
+        module_id: str,
+        metric_type: METRIC_TYPE,
+        metric_value: float,
     ):
         self.created_on = datetime.now(tz=timezone.utc)
-        self.component_type = component_type
-        self.component_id = component_id
-        self.metric = metric
-        self.value = value
+        self.module_type = module_type
+        self.module_id = module_id
+        self.metric_type = metric_type
+        self.metric_value = metric_value
 
     @property
     def timestamp(self):
@@ -27,15 +27,15 @@ class Reading:
 
     def __str__(self):
         return (
-            f"{self.iso_date} {self.component_type.value} "
-            f"{self.component_id} {self.metric.value} {self.value:.2f}"
+            f"{self.iso_date} {self.module_type.value} "
+            f"{self.module_id} {self.metric_type.value} {self.metric_value:.2f}"
         )
 
     def as_dict(self):
         return {
             "created_on": self.timestamp,
-            "component_type": self.component_type.value,
-            "component_id": self.component_id,
-            "metric": self.metric.value,
-            "value": self.value,
+            "module_type": self.module_type.value,
+            "module_id": self.module_id,
+            "metric_type": self.metric_type.value,
+            "metric_value": self.metric_value,
         }
