@@ -16,7 +16,7 @@ To enable BME680 sensor, provide:
 - ENABLE_BME680 = True
 
 To enable Relays, provide:
-- RELAY_PINS = "[26, 20, 21]]"
+- RELAY_PINS = "[26,20,21]"
 
 To enable LiveSQSConsumer, provide:
 - AWS_ACCESS_KEY_ID = string

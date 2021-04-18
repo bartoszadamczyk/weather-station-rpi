@@ -1,5 +1,5 @@
 from .async_handler import run_in_executor
-from .aws import send_message_to_sqs
+from .aws import SQSClient
 from .constants import ACTION_TYPE
 from .reading import Reading
 
@@ -16,11 +16,12 @@ class ReadingsLogger:
 
 
 class LiveSQSConsumer:
-    def __init__(self, device_id: str, queue_url: str):
+    def __init__(self, sqs_client: SQSClient, device_id: str, queue_url: str):
+        self.sqs_client = sqs_client
         self.device_id = device_id
         self.queue_url = queue_url
         self.base = {"action": ACTION_TYPE.LIVE_READING.value, "device_id": device_id}
 
     async def consume_reading(self, reading: Reading):
         body = {**self.base, **reading.as_dict()}
-        await run_in_executor(send_message_to_sqs, self.queue_url, body)
+        await run_in_executor(self.sqs_client.send_message_to_sqs, self.queue_url, body)

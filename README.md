@@ -103,14 +103,14 @@ You can get it on [The PiHut](https://thepihut.com/products/raspberry-pi-relay-b
 
 You can configure more features with `Device service variables`:
 
-| Feature                       | `ENV VARIABLES`                                                                       | Format            |
-|-------------------------------|---------------------------------------------------------------------------------------|-------------------|
-| Override `BALENA_DEVICE_UUID` | `DEVICE_ID`                                                                           | `string`          |
-| Enable Sentry                 | `SENTRY_DSN`, `SENTRY_ENVIRONMENT`                                                    | `string`          |
-| Enable DHT22 sensors          | `DHT22_PINS`                                                                          | `"[17]"`          |
-| Enable BME680 sensor          | `ENABLE_BME680`                                                                       | `True`            |
-| Enable Relays                 | `RELAY_PINS`                                                                          | `"[26, 20, 21]]"` |
-| Enable LiveSQSConsumer        | `AWS_ACCESS_KEY_ID` ,`AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION` and `AWS_SQS_DATA` | `string`          |
+| Feature                       | `ENV VARIABLES`                                                                       | Format           |
+|-------------------------------|---------------------------------------------------------------------------------------|------------------|
+| Override `BALENA_DEVICE_UUID` | `DEVICE_ID`                                                                           | `string`         |
+| Enable Sentry                 | `SENTRY_DSN`, `SENTRY_ENVIRONMENT`                                                    | `string`         |
+| Enable DHT22 sensors          | `DHT22_PINS`                                                                          | `"[17]"`         |
+| Enable BME680 sensor          | `ENABLE_BME680`                                                                       | `True`           |
+| Enable Relays                 | `RELAY_PINS`                                                                          | `"[26, 20, 21]"` |
+| Enable LiveSQSConsumer        | `AWS_ACCESS_KEY_ID` ,`AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION` and `AWS_SQS_DATA` | `string`         |
 
 ## Supported Devices
 

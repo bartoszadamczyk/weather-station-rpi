@@ -1,4 +1,5 @@
 from .async_handler import AsyncHandler
+from .aws import SQSClient
 from .config import CONFIG
 from .consumers import ReadingsLogger, LiveSQSConsumer
 from .relay import RelayHandler, cleanup_gpio
@@ -34,8 +35,9 @@ def run():
     # Create consumers
     async_handler.add_consumer(ReadingsLogger())
     if CONFIG.AWS_SQS_DATA:
+        sqs_client = SQSClient()
         async_handler.add_consumer(
-            LiveSQSConsumer(CONFIG.DEVICE_ID, CONFIG.AWS_SQS_DATA)
+            LiveSQSConsumer(sqs_client, CONFIG.DEVICE_ID, CONFIG.AWS_SQS_DATA)
         )
 
     # Start the app
