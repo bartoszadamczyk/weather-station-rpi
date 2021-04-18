@@ -110,7 +110,9 @@ class DS18B20Sensor(Producer):
         if metric_type not in self.supported_metric_types:
             return None
         metric_value = await run_in_executor(self._get_metric_value, metric_type)
-        return Reading(self.module_type, self.module_id, metric_type, metric_value)
+        if metric_value:
+            return Reading(self.module_type, self.module_id, metric_type, metric_value)
+        return None
 
 
 def discover_ds18b20_sensors() -> List[DS18B20Sensor]:

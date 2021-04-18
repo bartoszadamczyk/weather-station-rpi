@@ -1,6 +1,6 @@
 import json
 import boto3
-from botocore.exceptions import EndpointConnectionError
+from botocore.exceptions import EndpointConnectionError  # type: ignore
 
 
 class SQSClient:
