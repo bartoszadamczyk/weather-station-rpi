@@ -7,12 +7,13 @@ from .reading import Reading
 class ReadingsLogger:
     count = 0
 
-    async def consume_reading(self, reading: Reading):
-        if self.count < 200 or self.count % 100 < 10:
+    async def consume_reading(self, reading: Reading, initWindowSize: int = 200, logWindowSize: int = 10, skipWindowSize: int = 1000):
+        if self.count < 210:
             print(reading)
         self.count += 1
-        if self.count >= 1000000:
-            self.count = 1000
+        if self.count >= 710:
+            print("Skipped 500 readings")
+            self.count = 200
 
 
 class LiveSQSConsumer:
