@@ -7,7 +7,13 @@ from .reading import Reading
 class ReadingsLogger:
     count = 0
 
-    async def consume_reading(self, reading: Reading, initWindowSize: int = 200, logWindowSize: int = 10, skipWindowSize: int = 1000):
+    async def consume_reading(
+        self,
+        reading: Reading,
+        initWindowSize: int = 200,
+        logWindowSize: int = 10,
+        skipWindowSize: int = 1000,
+    ):
         if self.count < 210:
             print(reading)
         self.count += 1
