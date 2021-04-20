@@ -24,7 +24,7 @@ jobs:
       - name: Run mypy
         run: mypy .
       - name: Run Pytest
-       run: pytest
+        run: pytest
   deploy_develop:
     name: Deploy Develop
     runs-on: ubuntu-latest
