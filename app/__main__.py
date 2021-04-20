@@ -1,5 +1,5 @@
 import sentry_sdk
-from app.config import CONFIG
+from app.env_config import CONFIG
 
 if __name__ == "__main__":
     # Init Sentry before any app imports

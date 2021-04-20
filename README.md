@@ -9,7 +9,7 @@ Cloud based Raspberry Pi weather station
 
 - [Cloud App](https://github.com/bartoszadamczyk/weather-station-cloud)
     - [React App](https://github.com/bartoszadamczyk/weather-station-cloud/app) - Netlify, TypeScript, React, Immer,
-      WebSockets, i18next, styled-components, Sentry, ESLint GitHub Actions
+      WebSockets, i18next, Sentry, ESLint GitHub Actions
     - [Serverless API](https://github.com/bartoszadamczyk/weather-station-cloud/serverless) - Serverless, AWS API
       Gateway (with WebSockets), DynamoDB, SQS, TypeScript, AJV, Sentry, ESLint, GitHub Actions
     - [Terraform](https://github.com/bartoszadamczyk/weather-station-cloud/terraform) - Terraform, TFLint, GitHub

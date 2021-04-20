@@ -6,8 +6,8 @@ on:
       - 'develop'
 
 jobs:
-  lint:
-    name: Lint
+  lint_and_test:
+    name: Lint and Test
     runs-on: ubuntu-latest
     steps:
       - name: Setup Python
@@ -23,6 +23,8 @@ jobs:
         run: flake8
       - name: Run mypy
         run: mypy .
+      - name: Run Pytest
+       run: pytest
   deploy_develop:
     name: Deploy Develop
     runs-on: ubuntu-latest

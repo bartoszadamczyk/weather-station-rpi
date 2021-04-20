@@ -3,9 +3,9 @@ from typing import List, Optional
 
 import RPi.GPIO as GPIO  # type: ignore
 
-from .async_handler import Producer, run_in_executor
-from .constants import MODULE_TYPE, METRIC_TYPE
-from .reading import Reading
+from app.async_handler import Producer, run_in_executor
+from app.constants import MODULE_TYPE, METRIC_TYPE
+from app.reading import Reading
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -27,26 +27,26 @@ class Relay(Producer):
         await run_in_executor(
             functools.partial(GPIO.setup, self._pin, GPIO.OUT, initial=GPIO.HIGH)
         )
-        await self._callback(self._get_reading(METRIC_TYPE.INIT))
+        await self._callback(self._get_reading(METRIC_TYPE.STATE))
 
     async def up(self):
         if self._is_active and self._state == 0:
             self._state = 1
             await run_in_executor(GPIO.output, self._pin, GPIO.LOW)
-            await self._callback(self._get_reading(METRIC_TYPE.CHANGE))
+            await self._callback(self._get_reading(METRIC_TYPE.STATE))
 
     async def down(self):
         if self._is_active and self._state == 1:
             self._state = 0
             await run_in_executor(GPIO.output, self._pin, GPIO.HIGH)
-            await self._callback(self._get_reading(METRIC_TYPE.CHANGE))
+            await self._callback(self._get_reading(METRIC_TYPE.STATE))
 
     async def cleanup(self):
         if self._is_active:
             self._is_active = False
             self._state = 0
             await run_in_executor(GPIO.cleanup, self._pin)
-            await self._callback(self._get_reading(METRIC_TYPE.CLEANUP))
+            await self._callback(self._get_reading(METRIC_TYPE.STATE))
 
     @property
     def module_id(self) -> str:

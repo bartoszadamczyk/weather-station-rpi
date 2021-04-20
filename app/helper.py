@@ -1,4 +1,5 @@
 import signal
+from datetime import datetime
 
 
 class GracefulKiller:
@@ -15,3 +16,11 @@ class GracefulKiller:
 def get_cpu_temperature() -> float:
     with open("/sys/class/thermal/thermal_zone0/temp", "r") as cpu_temperature_file:
         return int(cpu_temperature_file.read()) / 1000
+
+
+def get_timestamp(date: datetime) -> int:
+    return int(date.timestamp() * 1000)
+
+
+def get_iso_date(date: datetime) -> str:
+    return date.isoformat()[:23]
