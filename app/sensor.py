@@ -7,10 +7,10 @@ from busio import I2C  # type: ignore
 import adafruit_bme680  # type: ignore
 import board  # type: ignore
 
-from .async_handler import run_in_executor, Producer
-from .constants import MODULE_TYPE, METRIC_TYPE
-from .helper import get_cpu_temperature
-from .reading import Reading
+from app.async_handler import run_in_executor, Producer
+from app.constants import MODULE_TYPE, METRIC_TYPE
+from app.helper import get_cpu_temperature
+from app.reading import Reading
 
 
 class RPISensor(Producer):
@@ -140,7 +140,7 @@ class BME680Sensor(Producer):
             METRIC_TYPE.TEMPERATURE,
             METRIC_TYPE.HUMIDITY,
             METRIC_TYPE.PRESSURE,
-            METRIC_TYPE.GAS,
+            METRIC_TYPE.VOX,
         ]
 
     def _get_metric_value(self, metric_type: METRIC_TYPE) -> Optional[float]:
@@ -151,7 +151,7 @@ class BME680Sensor(Producer):
                 return self._pointer.humidity
             if metric_type == METRIC_TYPE.PRESSURE:
                 return self._pointer.pressure
-            if metric_type == METRIC_TYPE.GAS:
+            if metric_type == METRIC_TYPE.VOX:
                 return self._pointer.gas
             return None
         except OSError:

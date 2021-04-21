@@ -1,5 +1,5 @@
 import json
-import os
+from typing import Optional
 
 """
 To override BALENA_DEVICE_UUID, provide:
@@ -25,16 +25,30 @@ To enable LiveSQSConsumer, provide:
 - AWS_SQS_DATA = string
 """
 
-_DEVICE_ID = os.getenv("DEVICE_ID")
-_DHT22_PINS = os.getenv("DHT22_PINS")
-_RELAY_PINS = os.getenv("RELAY_PINS")
+
+class MissingEnvVariableException(Exception):
+    def __init__(self, var: str):
+        self.var = var
+
+    def __str__(self):
+        return f"Missing Env Variable: {self.var}"
 
 
-class CONFIG:
-    DEVICE_ID = _DEVICE_ID if _DEVICE_ID else os.environ["BALENA_DEVICE_UUID"]
+class Config:
+    def __init__(
+        self,
+        balena_device_uuid: Optional[str],
+        device_id: str = None,
+        dht22_pins: str = None,
+        enable_bme680: str = None,
+        relay_pins: str = None,
+        aws_sqs_data: str = None,
+    ):
+        if not balena_device_uuid:
+            raise MissingEnvVariableException("BALENA_DEVICE_UUID")
 
-    # Optional
-    DHT22_PINS = json.loads(_DHT22_PINS) if _DHT22_PINS else None
-    ENABLE_BME680 = True if os.getenv("ENABLE_BME680") else False
-    RELAY_PINS = json.loads(_RELAY_PINS) if _RELAY_PINS else None
-    AWS_SQS_DATA = os.getenv("AWS_SQS_DATA")
+        self.DEVICE_ID = device_id if device_id else balena_device_uuid
+        self.DHT22_PINS = json.loads(dht22_pins) if dht22_pins else None
+        self.ENABLE_BME680 = True if enable_bme680 else False
+        self.RELAY_PINS = json.loads(relay_pins) if relay_pins else None
+        self.AWS_SQS_DATA = aws_sqs_data or None

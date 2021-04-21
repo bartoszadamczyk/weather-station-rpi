@@ -6,8 +6,8 @@ from typing import Protocol, List, Callable, Any, TypeVar, Coroutine, Optional
 
 import asyncio
 
-from .constants import MODULE_TYPE, METRIC_TYPE
-from .reading import Reading
+from app.constants import MODULE_TYPE, METRIC_TYPE
+from app.reading import Reading
 
 
 class Producer(ABC):

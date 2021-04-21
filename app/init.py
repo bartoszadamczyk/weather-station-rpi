@@ -1,9 +1,9 @@
-from .async_handler import AsyncHandler
-from .aws import SQSClient
-from .config import CONFIG
-from .consumers import ReadingsLogger, LiveSQSConsumer
-from .relay import RelayHandler, cleanup_gpio
-from .sensor import (
+from app.async_handler import AsyncHandler
+from app.aws import SQSClient
+from app.env_config import CONFIG
+from app.consumer import ReadingsLogger, LiveSQSConsumer
+from app.relay import RelayHandler, cleanup_gpio
+from app.sensor import (
     create_rpi_sensor,
     discover_ds18b20_sensors,
     create_dht22_sensor,

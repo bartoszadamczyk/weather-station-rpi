@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
-from .constants import MODULE_TYPE, METRIC_TYPE
+from app.constants import MODULE_TYPE, METRIC_TYPE
+from app.helper import get_timestamp, get_iso_date
 
 
 class Reading:
@@ -10,20 +11,21 @@ class Reading:
         module_id: str,
         metric_type: METRIC_TYPE,
         metric_value: float,
+        created_on: datetime = None,
     ):
-        self.created_on = datetime.now(tz=timezone.utc)
         self.module_type = module_type
         self.module_id = module_id
         self.metric_type = metric_type
         self.metric_value = metric_value
+        self.created_on = created_on or datetime.now(tz=timezone.utc)
 
     @property
     def timestamp(self):
-        return int(self.created_on.timestamp() * 1000)
+        return get_timestamp(self.created_on)
 
     @property
     def iso_date(self):
-        return self.created_on.isoformat()[:23]
+        return get_iso_date(self.created_on)
 
     def __str__(self):
         return (
