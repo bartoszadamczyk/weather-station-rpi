@@ -28,4 +28,4 @@ jobs:
       - name: Run mypy
         run: mypy .
       - name: Run Pytest
-        run: pytest
+        run: BALENA_DEVICE_UUID='test' pytest
