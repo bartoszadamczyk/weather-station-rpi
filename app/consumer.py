@@ -1,6 +1,6 @@
 from app.async_handler import run_in_executor
 from app.aws import SQSClient
-from app.constants import ACTION_TYPE
+from app.constants import EVENT_TYPE
 from app.reading import Reading
 
 
@@ -36,7 +36,10 @@ class LiveSQSConsumer:
         self.sqs_client = sqs_client
         self.device_id = device_id
         self.queue_url = queue_url
-        self.base = {"action": ACTION_TYPE.LIVE_READING.value, "device_id": device_id}
+        self.base = {
+            "event_type": EVENT_TYPE.LIVE_READING.value,
+            "device_id": device_id,
+        }
 
     async def consume_reading(self, reading: Reading):
         body = {**self.base, **reading.as_dict()}

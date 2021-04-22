@@ -22,7 +22,7 @@ class TestLiveSQSConsumer(AsyncTestCase):
         )
         await consumer.consume_reading(reading)
         correct_dict = {
-            "action": "live_reading",
+            "event_type": "live_reading",
             "device_id": "device_id",
             "created_on": test_date_timestamp,
             "module_type": "rpi",
