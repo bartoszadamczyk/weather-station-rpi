@@ -1,6 +1,6 @@
 from app.async_handler import AsyncHandler
 from app.aws import SQSClient
-from app.env_config import CONFIG
+from app.config import CONFIG
 from app.consumer import ReadingsLogger, LiveSQSConsumer
 from app.relay import RelayHandler, cleanup_gpio
 from app.sensor import (

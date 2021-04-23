@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class ACTION_TYPE(Enum):
+class EVENT_TYPE(Enum):
     LIVE_READING = "live_reading"
 
 
