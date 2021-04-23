@@ -8,14 +8,16 @@ Cloud based Raspberry Pi weather station
 ### Repositories
 
 - [Cloud App](https://github.com/bartoszadamczyk/weather-station-cloud)
-    - [React App](https://github.com/bartoszadamczyk/weather-station-cloud/app) - Netlify, TypeScript, React, Immer,
-      WebSockets, i18next, Sentry, ESLint GitHub Actions
-    - [Serverless API](https://github.com/bartoszadamczyk/weather-station-cloud/serverless) - Serverless, AWS API
-      Gateway (with WebSockets), DynamoDB, SQS, TypeScript, AJV, Sentry, ESLint, GitHub Actions
-    - [Terraform](https://github.com/bartoszadamczyk/weather-station-cloud/terraform) - Terraform, TFLint, GitHub
-      Actions
-- [Raspberry Pi](https://github.com/bartoszadamczyk/weather-station-rpi) - Raspberry Pi, balena.io, Docker, Python,
-  AsyncIO, SQS, Mypy, Black, Flake8, Sentry and GitHub Actions
+    - [React App](https://github.com/bartoszadamczyk/weather-station-cloud/app) Frontend React app that displays live
+      readings. Stack: `Netlify`, `TypeScript`, `React`, `Immer`, `WebSockets`, `i18next`, `antd`, `Sentry`, `Jest`,
+      `ESLint`, `GitHub Actions`
+    - [Serverless API](https://github.com/bartoszadamczyk/weather-station-cloud/serverless) - Serverless API bundled
+      with Serverless and hosted on AWS Lambda. Stack: `Serverless`, `TypeScript`, `DynamoDB`, `SQS`,
+      `AWS API Gateway (with WebSockets)`, `AJV`, `Sentry`, `Mocha`, `Chai`, `Sinon`, `ESLint`, `GitHub Actions`
+    - [Terraform](https://github.com/bartoszadamczyk/weather-station-cloud/terraform) - `Terraform`, `TFLint`
+      , `GitHub Actions`
+- [Raspberry Pi](https://github.com/bartoszadamczyk/weather-station-rpi) - `Raspberry Pi`, `Linux`, `balena.io`, 
+  `Docker`, `Python`, `AsyncIO`, `SQS`, `Mypy`, `Black`, `Flake8`, `Sentry` and `GitHub Actions`
 
 ![All sensors module](docs/all-sensors-module.jpg)
 
