@@ -11,13 +11,14 @@ Cloud based Raspberry Pi weather station
     - [React App](https://github.com/bartoszadamczyk/weather-station-cloud/app) Frontend React app that displays live
       readings. Stack: `Netlify`, `TypeScript`, `React`, `Immer`, `WebSockets`, `i18next`, `antd`, `Sentry`, `Jest`,
       `ESLint`, `GitHub Actions`
-    - [Serverless API](https://github.com/bartoszadamczyk/weather-station-cloud/serverless) - Serverless API bundled
-      with Serverless and hosted on AWS Lambda. Stack: `Serverless`, `TypeScript`, `DynamoDB`, `SQS`,
+    - [Serverless API](https://github.com/bartoszadamczyk/weather-station-cloud/serverless) Serverless API bundled with
+      Serverless and hosted on AWS Lambda. Stack: `Serverless`, `TypeScript`, `DynamoDB`, `SQS`, 
       `AWS API Gateway (with WebSockets)`, `AJV`, `Sentry`, `Mocha`, `Chai`, `Sinon`, `ESLint`, `GitHub Actions`
-    - [Terraform](https://github.com/bartoszadamczyk/weather-station-cloud/terraform) - `Terraform`, `TFLint`
-      , `GitHub Actions`
-- [Raspberry Pi](https://github.com/bartoszadamczyk/weather-station-rpi) - `Raspberry Pi`, `Linux`, `balena.io`, 
-  `Docker`, `Python`, `AsyncIO`, `SQS`, `Mypy`, `Black`, `Flake8`, `Sentry` and `GitHub Actions`
+    - [Terraform](https://github.com/bartoszadamczyk/weather-station-cloud/terraform) Stack: `Terraform`, `TFLint`, 
+      `GitHub Actions`
+- [Raspberry Pi](https://github.com/bartoszadamczyk/weather-station-rpi) Raspberry Pi worker deployed with balena.io.
+  Stack `Raspberry Pi`, `Linux`, `balena.io`, `Docker`, `Python`, `AsyncIO`, `SQS`, `Mypy`, `Black`, `Flake8`, `Sentry`
+  and `GitHub Actions`
 
 ![All sensors module](docs/all-sensors-module.jpg)
 
@@ -147,10 +148,17 @@ pip freeze > requirements.txt
 ./lint.sh
 ```
 
+### Run test
+
+```shell
+./test.sh
+```
+
 ## Sources
 
 - https://pinout.xyz/
 - https://www.circuito.io/app
 - https://lastminuteengineers.com/electronics/basic-electronics/
 
-
+## Backlog
+[Available in weather-station-cloud repo](https://github.com/bartoszadamczyk/weather-station-cloud#backlog)
