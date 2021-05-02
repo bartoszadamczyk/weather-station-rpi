@@ -1,24 +1,27 @@
-# Weather station: Raspberry Pi
+# Weather Station based on Raspberry Pi and AWS
 
 [![Deploy Prod](https://github.com/bartoszadamczyk/weather-station-rpi/actions/workflows/deploy_prod.yml/badge.svg?branch=main)](https://github.com/bartoszadamczyk/weather-station-rpi/actions/workflows/deploy_prod.yml)
 [![License: MIT](https://img.shields.io/github/license/bartoszadamczyk/weather-station-rpi)](https://github.com/bartoszadamczyk/weather-station-rpi/blob/main/LICENSE)
 
-Cloud based Raspberry Pi weather station
+The project objectives were to create a way to remotely monitor countryside house temperature with Raspberry Pi and
+sensors like DS18B20, and to automate the control of emergency heating with relays and GPIOs, to protect water pipes in
+the winter. The POC was ready in under two weeks, however later on I decided to push the project further and use it as a
+sandbox to broaden my skill set.
 
 ### Repositories
 
-- [Cloud App](https://github.com/bartoszadamczyk/weather-station-cloud)
-    - [React App](https://github.com/bartoszadamczyk/weather-station-cloud/app) Frontend React app that displays live
-      readings. Stack: `Netlify`, `TypeScript`, `React`, `Immer`, `WebSockets`, `i18next`, `antd`, `Sentry`, `Jest`,
-      `ESLint`, `GitHub Actions`
-    - [Serverless API](https://github.com/bartoszadamczyk/weather-station-cloud/serverless) Serverless API bundled with
-      Serverless and hosted on AWS Lambda. Stack: `Serverless`, `TypeScript`, `DynamoDB`, `SQS`, 
+- [[GitHub] bartoszadamczyk/weather-station-cloud](https://github.com/bartoszadamczyk/weather-station-cloud)
+    - [/app](https://github.com/bartoszadamczyk/weather-station-cloud/app) - frontend React App that displays live
+      readings. Tech stack: `Netlify`, `TypeScript`, `React`, `Immer`, `WebSockets`, `i18next`, `antd`, `Sentry`, 
+      `Jest`, `ESLint`, `GitHub Actions`
+    - [/serverless](https://github.com/bartoszadamczyk/weather-station-cloud/serverless) - serverless API bundled with
+      Serverless and hosted on AWS Lambda. Tech stack: `Serverless`, `TypeScript`, `DynamoDB`, `SQS`,
       `AWS API Gateway (with WebSockets)`, `AJV`, `Sentry`, `Mocha`, `Chai`, `Sinon`, `ESLint`, `GitHub Actions`
-    - [Terraform](https://github.com/bartoszadamczyk/weather-station-cloud/terraform) Stack: `Terraform`, `TFLint`, 
-      `GitHub Actions`
-- [Raspberry Pi](https://github.com/bartoszadamczyk/weather-station-rpi) Raspberry Pi worker deployed with balena.io.
-  Stack `Raspberry Pi`, `Linux`, `balena.io`, `Docker`, `Python`, `AsyncIO`, `SQS`, `Mypy`, `Black`, `Flake8`, `Sentry`
-  and `GitHub Actions`
+    - [/terraform](https://github.com/bartoszadamczyk/weather-station-cloud/terraform) - Tech stack: `Terraform`, 
+      `TFLint`, `GitHub Actions`
+- [[GitHub] bartoszadamczyk/weather-station-rpi](https://github.com/bartoszadamczyk/weather-station-rpi) - raspberry Pi worker
+  deployed with balena.io. Tech stack: `Raspberry Pi`, `Linux`, `balena.io`, `Docker`, `Python`, `AsyncIO`, `SQS`, 
+  `Mypy`, `Black`, `Flake8`, `Sentry` and `GitHub Actions`
 
 ![All sensors module](docs/all-sensors-module.jpg)
 
