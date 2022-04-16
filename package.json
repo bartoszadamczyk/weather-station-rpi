@@ -1,0 +1,9 @@
+{
+  "name": "sypialnia",
+  "private": true,
+  "scripts": {
+    "lint": "black . && flake8 && mypy .",
+    "test": "BALENA_DEVICE_UUID='test' pytest",
+    "deploy:development": "docker run --rm -e BALENA_API_TOKEN=$BALENA_API_TOKEN -v $(pwd)/:/app/ bartoszadamczyk/balena-cli push development"
+  }
+}

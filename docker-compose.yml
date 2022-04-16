@@ -1,0 +1,21 @@
+version: '2'
+services:
+  weather:
+    build: ./weather-station-rpi
+    restart: unless-stopped
+    privileged: true
+  new_relic:
+    image: bartoszadamczyk/newrelic-infrastructure-for-balena
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    pid: host
+    privileged: true
+    network_mode: host
+    environment:
+      NRIA_OVERRIDE_HOSTNAME_SHORT: sypialnia
+    labels:
+      io.balena.features.dbus: '1'
+      io.balena.features.sysfs: '1'
+      io.balena.features.procfs: '1'
+      io.balena.features.balena-socket: '1'
