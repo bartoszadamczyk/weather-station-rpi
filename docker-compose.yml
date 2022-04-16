@@ -1,7 +1,7 @@
 version: '2'
 services:
   weather:
-    build: ./weather-station-rpi
+    build: .
     restart: unless-stopped
     privileged: true
   new_relic:
