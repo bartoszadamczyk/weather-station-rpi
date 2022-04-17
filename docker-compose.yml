@@ -12,8 +12,6 @@ services:
     pid: host
     privileged: true
     network_mode: host
-    environment:
-      NRIA_OVERRIDE_HOSTNAME_SHORT: sypialnia
     labels:
       io.balena.features.dbus: '1'
       io.balena.features.sysfs: '1'
